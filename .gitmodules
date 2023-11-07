@@ -1,0 +1,3 @@
+[submodule "muggy/thirdparty/glfw"]
+	path = muggy/thirdparty/glfw
+	url = https://github.com/glfw/glfw.git
