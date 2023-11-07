@@ -2,12 +2,15 @@
 # |<----  Using a Maximum Of 50 Characters  ---->|
 # This means that, subject should stop here ---->|
 
+
 # <body> (optional)
 # Explain how the commit addresses the issue
 # |<----   Try To Limit Each Line to a Maximum Of 72 Characters   ---->|
 # This means that, each line in the body should wrap here ------------>|
 
+
 # IMPORTANT!! Describe any side effects of the change.
+
 
 # <links/references> (optional)
 # Provide links or keys to any relevant tickets, articles or other 

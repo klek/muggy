@@ -1,11 +1,14 @@
 cmake_minimum_required ( VERSION 3.0.0 )
-project ( muggy VERSION 0.1.0 LANGUAGES C CXX )
+set ( PROJECT_NAME muggy )
+project ( ${PROJECT_NAME} VERSION 0.1.0 LANGUAGES C CXX )
 
 include ( CTest )
 enable_testing ()
 
 # CMAKE flags
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror") 
+set ( CMAKE_CXX_STANDARD 17 )
+set ( CMAKE_CXX_STANDARD_REQUIRED TRUE )
 
 # Determine OS Bitness ie 32 or 64
 set ( OSbitness 32 )
@@ -22,8 +25,37 @@ set ( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OutputDir} )
 set ( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OutputDir} )
 set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OutputDir} )
 
+# Download all submodules
+find_package ( Git REQUIRED )
+if ( GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/../.git")
+    # Update submodules as needed
+    option ( GIT_SUBMODULE "Check submodules during build" ON )
+    if ( GIT_SUBMODULE )
+        message ( STATUS "Updating submodules" )
+        execute_process( COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive 
+                         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../
+                         RESULT_VARIABLE GIT_SUBMODULE_RESULT  
+                        )
+        if ( NOT GIT_SUBMODULE_RESULT EQUAL "0" )
+            message ( FATAL_ERROR "${GIT_EXECUTABLE} submodule update --init --recursive failed with ${GIT_SUBMODULE_RESULT}" )
+        endif ()
+    endif ()
+endif ()
+
+# Now check that the CMakeLists.txt for each submodule exists
+if ( NOT EXISTS "${PROJECT_SOURCE_DIR}/thirdparty/glfw/CMakeLists.txt" )
+    message ( FATAL_ERROR "The GLFW submodule was not properly downloaded! GIT_SUBMODULE was turned off or failed?" )
+else ()
+    set ( GLFW_BUILD_EXAMPLES OFF )
+    set ( GLFW_BUILD_TESTS OFF )
+    set ( GLFW_BUILD_DOCS OFF )
+    add_subdirectory ( thirdparty/glfw )
+endif ()
+
+
 # Find required packages
-find_package ( glfw3 3.3 REQUIRED )
+#find_package ( glfw3 3.3 REQUIRED )
+set ( OpenGL_GL_PREFERENCE "GLVND" )
 find_package ( OpenGL REQUIRED )
 find_package ( GLEW REQUIRED )
 
@@ -42,9 +74,16 @@ include_directories( IncDir )
 add_library ( ${PROJECT_NAME} 
               SHARED muggy.cpp 
 )
-#add_library ( "${PROJECT_NAME}static" 
-#              STATIC muggy.cpp 
-#)
+
+# Add target include directories
+target_include_directories ( ${PROJECT_NAME}
+                             PUBLIC thirdparty/glfw/include 
+)
+
+# Add target link directories
+target_link_directories ( ${PROJECT_NAME} 
+                          PRIVATE thirdparty/glfw/src 
+)
 
 # Add target libraries to our this library
 target_link_libraries ( ${PROJECT_NAME}
