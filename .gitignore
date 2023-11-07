@@ -38,13 +38,28 @@ Thumbs.db
 
 # Directories #
 ###############
-build
+[Bb][Uu][Ii][Ll][Dd]
 GLFW
 GLEW
-misc
-libs
+[Mm][Ii][Ss][Cc]
+[Ll][Ii][Bb][Ss]
+[Bb][Ii][Nn]
 
 # VS Code directories/files #
-#######################
+#############################
 .vscode
 *.code-workspace
+
+# CMAKE files #
+###############
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
