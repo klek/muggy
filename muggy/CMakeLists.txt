@@ -20,7 +20,7 @@ else ()
 endif ()
 
 # Setup output directory for binaries
-set ( OutputDir "${CMAKE_SOURCE_DIR}/../bin/${CMAKE_SYSTEM_NAME}${OSBitness}/${CMAKE_BUILD_TYPE}" )
+set ( OutputDir "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${CMAKE_SYSTEM_NAME}${OSBitness}/${CMAKE_BUILD_TYPE}" )
 set ( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OutputDir} )
 set ( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OutputDir} )
 set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OutputDir} )
@@ -60,20 +60,33 @@ find_package ( OpenGL REQUIRED )
 find_package ( GLEW REQUIRED )
 
 # Set include directories
-set ( IncDir ${CMAKE_SOURCE_DIR} )
+set ( IncDir ${CMAKE_CURRENT_SOURCE_DIR} )
 # For debugging
-#message( STATUS "****** ${CMAKE_SOURCE_DIR} ******" )
+message( STATUS "****** ${CMAKE_CURRENT_SOURCE_DIR} ******" )
 
 # Include directories
-include_directories( IncDir )
+include_directories( ${IncDir} )
+#include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/code" )
+#include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/code/common" )
+#include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/code/core" )
+#include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/code/graphics" )
+#include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/code/log" )
 
 # Include external headers
 #include_directories ( )
 
+# Add source files
+file ( GLOB_RECURSE SrcFiles
+       ${CMAKE_CURRENT_SOURCE_DIR}/code/*.cpp )
+
 # Add the source to the library
 add_library ( ${PROJECT_NAME} 
               SHARED muggy.cpp 
+              ${SrcFiles}
 )
+
+# For debugging
+message( STATUS "****** ${SrcFiles} ******" )
 
 # Add target include directories
 target_include_directories ( ${PROJECT_NAME}
