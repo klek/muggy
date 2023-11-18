@@ -18,32 +18,39 @@ else ()
 endif ()
 
 # Setup output directory for binaries
-set ( OutputDir "${CMAKE_SOURCE_DIR}/../bin/${CMAKE_SYSTEM_NAME}${OSBitness}/${CMAKE_BUILD_TYPE}" )
+set ( OutputDir "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${CMAKE_SYSTEM_NAME}${OSBitness}/${CMAKE_BUILD_TYPE}" )
 set ( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OutputDir} )
 set ( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OutputDir} )
 set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OutputDir} )
 
 # Set include directories
-set ( IncDir ${CMAKE_SOURCE_DIR} )
+set ( IncDir ${CMAKE_CURRENT_SOURCE_DIR} )
 # For debugging
-#message( STATUS "****** ${CMAKE_SOURCE_DIR} ******")
+#message( STATUS "****** ${CMAKE_CURRENT_SOURCE_DIR} ******")
 
 # Include directories
-include_directories ( IncDir )
+include_directories ( ${IncDir} )
+include_directories ( ${IncDir}/tests )
+
 
 # Include external headers (such as muggy)
-include_directories ( ${CMAKE_SOURCE_DIR}/../muggy )
+include_directories ( ${CMAKE_CURRENT_SOURCE_DIR}/../muggy )
 # Add subdirectories (such as muggy) and also specify
 # the binary folder (reusing muggy here)
 # This will call that folders CMakeLists.txt and build
 # Note that this will add target "muggy"
-add_subdirectory( ${CMAKE_SOURCE_DIR}/../muggy 
-                  ${CMAKE_SOURCE_DIR}/../muggy/build 
+add_subdirectory( ${CMAKE_CURRENT_SOURCE_DIR}/../muggy 
+                  ${CMAKE_CURRENT_SOURCE_DIR}/../muggy/build 
 )
+
+# Add source files
+file ( GLOB_RECURSE exampleSrcFiles
+       ${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp )
 
 # Set the sources for the executable
 add_executable ( ${PROJECT_NAME} 
                  main.cpp 
+                 ${exampleSrcFiles}
 )
 
 # Add target libraries
