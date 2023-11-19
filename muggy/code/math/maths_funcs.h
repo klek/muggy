@@ -45,4 +45,10 @@ namespace muggy::math
     T toRadians( T degrees );
 }
 
+#ifndef USE_MATH_EXTERNAL
+#define INCLUDE_MATHS_FUNCS_CPP            1
+#include "maths_funcs.cpp"
+#undef INCLUDE_MATHS_FUNCS_CPP
+#endif
+
 #endif

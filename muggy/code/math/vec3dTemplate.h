@@ -72,5 +72,10 @@ namespace muggy::math
     };
 } // namespace muggy::math
 
+#ifndef USE_MATH_EXTERNAL
+#define INCLUDE_VEC3_CPP            1
+#include "vec3dTemplate.cpp"
+#undef INCLUDE_VEC3_CPP
+#endif
 
 #endif

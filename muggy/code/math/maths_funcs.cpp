@@ -5,6 +5,7 @@
 //  Author:  klek
 //  Notes:   
 //********************************************************************
+#ifdef INCLUDE_MATHS_FUNCS_CPP
 
 #include "maths_funcs.h"
 #include <cmath>
@@ -51,3 +52,5 @@ namespace muggy::math
     }
 
 } // namespace muggy:math
+
+#endif

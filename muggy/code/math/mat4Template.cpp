@@ -5,6 +5,7 @@
 //  Author:  klek
 //  Notes:   
 //********************************************************************
+#ifdef INCLUDE_MAT4_CPP
 
 #include "mat4Template.h"
 
@@ -385,3 +386,5 @@ namespace muggy::math
     }
 
 } // namespace muggy::math
+
+#endif

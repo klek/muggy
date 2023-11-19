@@ -5,6 +5,7 @@
 //  Author:  klek
 //  Notes:   
 //********************************************************************
+#ifdef INCLUDE_VEC4_CPP
 
 #include "vec4dTemplate.h"
 
@@ -165,3 +166,5 @@ namespace muggy::math
     }
 
 } // namespace muggy::math
+
+#endif

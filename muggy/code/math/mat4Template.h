@@ -107,5 +107,10 @@ namespace muggy::math
 
 }
 
+#ifndef USE_MATH_EXTERNAL
+#define INCLUDE_MAT4_CPP            1
+#include "mat4Template.cpp"
+#undef INCLUDE_MAT4_CPP
+#endif
 
 #endif

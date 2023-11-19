@@ -5,6 +5,7 @@
 //  Author:  klek
 //  Notes:   
 //********************************************************************
+#ifdef INCLUDE_VEC3_CPP
 
 #include "vec3dTemplate.h"
 
@@ -155,3 +156,5 @@ namespace muggy::math
     }
 
 } // namespace muggy::math
+
+#endif
