@@ -48,7 +48,7 @@ namespace muggy::platform
         setWindowTitle( m_Id, caption );
     }
 
-    math::vec4d window::size() const
+    math::u32v4d window::size() const
     {
         // Check if this instance of id is valid
         assert( isValid() );
@@ -68,8 +68,8 @@ namespace muggy::platform
         // Check if this instance of id is valid
         assert( isValid() );
 
-        math::vec4d size{ getWindowSize( m_Id ) };
-        return size.z - size.x;
+        math::u32v4d size{ getWindowSize( m_Id ) };
+        return size.right - size.left;
     }
 
     uint32_t window::getHeight( void ) const
@@ -77,8 +77,8 @@ namespace muggy::platform
         // Check if this instance of id is valid
         assert( isValid() );
 
-        math::vec4d size{ getWindowSize( m_Id ) };
-        return size.w - size.y;
+        math::u32v4d size{ getWindowSize( m_Id ) };
+        return size.bottom - size.top;
     }
 
     bool window::isClosed( void ) const

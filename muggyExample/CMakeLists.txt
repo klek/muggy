@@ -7,6 +7,8 @@ enable_testing ()
 
 # CMAKE flags
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror") 
+set ( CMAKE_CXX_STANDARD 17 )
+set ( CMAKE_CXX_STANDARD_REQUIRED TRUE )
 
 # Determine OS Bitness ie 32 or 64
 set ( OSbitness 32 )

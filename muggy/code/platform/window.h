@@ -30,7 +30,7 @@ namespace muggy::platform
         bool isFullScreen( void ) const;
         void* handle( void ) const;
         void setCaption(const char* caption) const;
-        math::vec4d size( ) const;
+        math::u32v4d size( ) const;
         void resize( uint32_t width, uint32_t height ) const;
         uint32_t getWidth( void ) const;
         uint32_t getHeight( void ) const;

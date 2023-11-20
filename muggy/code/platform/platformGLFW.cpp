@@ -9,6 +9,7 @@
 //#include "platformGLFW.h"
 #include "platformTypes.h"
 #include "platform.h"
+#include "../math/math.h"
 //#include <algorithm>
 
 #if (defined(GLFW) || defined(GLFW3))
@@ -24,12 +25,9 @@ namespace muggy::platform
             /*GLFWmonitor*    monitor{ nullptr };*/
             windowId        id{ id::invalid_id };
             const char*     caption{ nullptr };
-            int32_t         left{ 0 };
-            int32_t         top{ 0 };
-            int32_t         width{ 0 };
-            int32_t         height{ 0 };
-            int32_t         fsWidth{ 0 };
-            int32_t         fsHeight{ 0 };
+            math::POINT     left_top{ 0, 0 };
+            math::RECT      area{ 0, 0, 640, 480 };
+            math::RECT      fullScreenArea{ 0, 0, 0, 0 };
             bool            isFullScreen{ false };
             bool            isClosed{ false };
         };
@@ -118,13 +116,13 @@ namespace muggy::platform
                     // Desired state is fullscreen
                     // Store the current window dimensions
                     glfwGetWindowSize( info.windowHandle, 
-                                    &(info.width), 
-                                    &(info.height) );
+                                       &(info.area.width), 
+                                       &(info.area.height) );
 
                     // Do we care about position?
                     glfwGetWindowPos( info.windowHandle, 
-                                    &(info.left), 
-                                    &(info.top) );
+                                      &(info.left_top.left), 
+                                      &(info.left_top.top) );
 
                     // Then we need to get the monitor
                     int32_t count;
@@ -136,14 +134,15 @@ namespace muggy::platform
 
                     const GLFWvidmode* mode = glfwGetVideoMode(desMonitor);
 
-                    info.fsWidth = mode->width;
-                    info.fsHeight = mode->height;
+                    info.fullScreenArea.width = mode->width;
+                    info.fullScreenArea.height = mode->height;
 
                     // Here we set the fullscreen
                     glfwSetWindowMonitor( info.windowHandle, desMonitor, 
-                                        0, 0, 
-                                        info.fsWidth, info.fsHeight,
-                                        mode->refreshRate );
+                                          0, 0, 
+                                          info.fullScreenArea.width, 
+                                          info.fullScreenArea.height,
+                                          mode->refreshRate );
                     
                 }
                 else 
@@ -151,9 +150,11 @@ namespace muggy::platform
                     // Here we simply restore previous settings
                     // before we went to fullscreen mode
                     glfwSetWindowMonitor( info.windowHandle, NULL, 
-                                        info.left, info.top, 
-                                        info.width, info.height,
-                                        0 );
+                                          info.left_top.left, 
+                                          info.left_top.top, 
+                                          info.area.width, 
+                                          info.area.height,
+                                          0 );
                 }
             }
         }
@@ -179,17 +180,15 @@ namespace muggy::platform
             info.caption = title;
         }
 
-        math::vec4d getWindowSize( windowId id )
+        math::u32v4d getWindowSize( windowId id )
         {
             window_info& info{ getFromId( id ) };
-            if ( info.isFullScreen )
-            {
-                math::vec4d area { info.left, info.top, info.fsWidth, info.fsHeight };
-                return area;
-            }
             
-            math::vec4d area{ info.left, info.top, info.width, info.height };
-            return ( area );
+            math::RECT area{ info.isFullScreen ? info.fullScreenArea : info.area };
+            return { (uint32_t)area.left, 
+                     (uint32_t)area.top, 
+                     (uint32_t)area.right, 
+                     (uint32_t)area.bottom };
         }
 
         void resizeWindow( windowId id, uint32_t width, uint32_t height )
@@ -222,20 +221,6 @@ namespace muggy::platform
             // info.height = height;
         }
 
-        uint32_t getWindowWidth( windowId id )
-        {
-            window_info& info{ getFromId( id ) };
-
-            return ( info.isFullScreen ? info.fsWidth : info.width );
-        }
-
-        uint32_t getWindowHeight( windowId id )
-        {
-            window_info& info{ getFromId( id ) };
-
-            return ( info.isFullScreen ? info.fsHeight : info.height );
-        }
-
         bool isWindowClosed( windowId id )
         {
             window_info& info{ getFromId( id ) };
@@ -253,13 +238,13 @@ namespace muggy::platform
             // glfwGetWindowSize( info.windowHandle, &(info.width), &(info.height) )
             if ( info.isFullScreen )
             {
-                info.fsWidth = width;
-                info.fsHeight = heigth;
+                info.fullScreenArea.width = width;
+                info.fullScreenArea.height = heigth;
             }
             else 
             {
-                info.width = width;
-                info.height = heigth;
+                info.area.width = width;
+                info.area.height = heigth;
             }
         }
 
@@ -271,8 +256,8 @@ namespace muggy::platform
             
             // Update values
             // glfwGetWindowPos( info.windowHandle, &(info.left), &(info.top) );
-            info.left = xpos;
-            info.top = ypos;
+            info.left_top.left = xpos;
+            info.left_top.top = ypos;
         }
 
         void windowCloseCallback( GLFWwindow* window )
@@ -312,21 +297,22 @@ namespace muggy::platform
 
         // Check the init info structure and set defaults if
         // it is missing
-        info.left    = { ( init_info && ( init_info->left > 0 ) ) ?
-                           init_info->left : 0 };
-        info.top     = { ( init_info && ( init_info->top > 0 ) ) ?
-                           init_info->top : 0 };
-        info.height  = { ( init_info && ( init_info->height > 0 ) ) ?
-                           init_info->height : 480 };
-        info.width   = { ( init_info && ( init_info->width > 0 ) ) ?
-                           init_info->width : 640 };
-        info.caption = { ( init_info && init_info->caption ) ? 
-                           init_info->caption : "Muggy Engine" };
+        info.left_top.left  = { ( init_info && ( init_info->left > 0 ) ) ?
+                                  init_info->left : 0 };
+        info.left_top.top   = { ( init_info && ( init_info->top > 0 ) ) ?
+                                  init_info->top : 0 };
+        info.area.width     = { ( init_info && ( init_info->width > 0 ) ) ?
+                                  init_info->width : 640 };
+        info.area.height    = { ( init_info && ( init_info->height > 0 ) ) ?
+                                  init_info->height : 480 };
+        info.caption        = { ( init_info && init_info->caption ) ? 
+                                  init_info->caption : "Muggy Engine" };
 
         // Open a new window without any context
         glfwWindowHint( GLFW_CLIENT_API, GLFW_NO_API );
         glfwWindowHint( GLFW_VISIBLE, GLFW_FALSE );
-        info.windowHandle = glfwCreateWindow( info.width, info.height, 
+        info.windowHandle = glfwCreateWindow( info.area.width, 
+                                              info.area.height, 
                                               info.caption, NULL,
                                               NULL);
 
@@ -349,20 +335,21 @@ namespace muggy::platform
         glfwSetWindowCloseCallback( info.windowHandle, windowCloseCallback );
 
         // Set the position of the window
+        glfwSetWindowPos( info.windowHandle, info.left_top.left, info.left_top.top );
         glfwSetWindowPosCallback( info.windowHandle, windowPosCallback );
-        glfwSetWindowPos( info.windowHandle, info.left, info.top );
 
         // Get the window size
+        glfwSetWindowSize( info.windowHandle, info.area.width, info.area.height );
         glfwSetWindowSizeCallback(info.windowHandle, windowSizeCallback);
-        glfwSetWindowSize( info.windowHandle, info.width, info.height );
-
-        // Finally show window
-        glfwShowWindow( info.windowHandle );
 
         // Add our new window to the list
         window id { addToWindowsList( info ) };
         // Finally add this id to the windowUserPointer
         //glfwSetWindowUserPointer(info.windowHandle, (void*)((uint64_t)(id)) );
+
+        // Finally show window
+        glfwShowWindow( info.windowHandle );
+
         return id;
     }
 

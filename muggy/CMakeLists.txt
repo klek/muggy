@@ -27,7 +27,7 @@ set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OutputDir} )
 
 # Download all submodules
 find_package ( Git REQUIRED )
-if ( GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/../.git")
+if ( GIT_FOUND AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../.git")
     # Update submodules as needed
     option ( GIT_SUBMODULE "Check submodules during build" ON )
     if ( GIT_SUBMODULE )
@@ -43,7 +43,7 @@ if ( GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/../.git")
 endif ()
 
 # Now check that the CMakeLists.txt for each submodule exists
-if ( NOT EXISTS "${PROJECT_SOURCE_DIR}/thirdparty/glfw/CMakeLists.txt" )
+if ( NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glfw/CMakeLists.txt" )
     message ( FATAL_ERROR "The GLFW submodule was not properly downloaded! GIT_SUBMODULE was turned off or failed?" )
 else ()
     set ( GLFW_BUILD_EXAMPLES OFF )
@@ -57,7 +57,7 @@ endif ()
 #find_package ( glfw3 3.3 REQUIRED )
 set ( OpenGL_GL_PREFERENCE "GLVND" )
 find_package ( OpenGL REQUIRED )
-find_package ( GLEW REQUIRED )
+#find_package ( GLEW REQUIRED )
 
 # Set include directories
 set ( IncDir ${CMAKE_CURRENT_SOURCE_DIR} )
@@ -81,7 +81,8 @@ file ( GLOB_RECURSE SrcFiles
 
 # Add the source to the library
 add_library ( ${PROJECT_NAME} 
-              SHARED muggy.cpp 
+#              SHARED muggy.cpp 
+              STATIC muggy.cpp 
               ${SrcFiles}
 )
 
@@ -102,9 +103,13 @@ target_link_directories ( ${PROJECT_NAME}
 target_link_libraries ( ${PROJECT_NAME}
                         PRIVATE glfw
                         PRIVATE OpenGL::GL
-                        PRIVATE GLEW 
+#                        PRIVATE GLEW 
 )
 
+if ( WIN32 )
+    # Add a suffix to the import library to avoid naming conflicts
+    set_target_properties(muggy PROPERTIES IMPORT_SUFFIX "dll.lib")
+endif ()
 
 set ( CPACK_PROJECT_NAME ${PROJECT_NAME} )
 set ( CPACK_PROJECT_VERSION ${PROJECT_VERSION} )
