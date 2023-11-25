@@ -89,5 +89,21 @@ namespace muggy::platform
         return isWindowClosed( m_Id );
     }
 
+    void window::update( void ) const
+    {
+        // Check if this instance of id is valid
+        assert( isValid() );
+
+        updateWindow( m_Id );
+    }
+
+    bool window::shouldClose( void ) const
+    {
+        // Check if this instance of id is valid
+        assert( isValid() );
+
+        return shouldWindowClose( m_Id );
+    }
+
 }
 #endif

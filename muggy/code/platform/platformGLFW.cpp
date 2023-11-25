@@ -10,7 +10,9 @@
 #include "platformTypes.h"
 #include "platform.h"
 #include "../math/math.h"
+#include "../event/event.h"
 //#include <algorithm>
+#include "../utilities/freelist.h"
 
 #if (defined(GLFW) || defined(GLFW3))
 
@@ -22,16 +24,22 @@ namespace muggy::platform
         struct window_info
         {
             GLFWwindow*     windowHandle{ nullptr };
-            /*GLFWmonitor*    monitor{ nullptr };*/
-            windowId        id{ id::invalid_id };
+            evFnCallback    callback{ nullptr };
+            window_id        id{ id::invalid_id };
             const char*     caption{ nullptr };
             math::POINT     left_top{ 0, 0 };
             math::RECT      area{ 0, 0, 640, 480 };
             math::RECT      fullScreenArea{ 0, 0, 0, 0 };
             bool            isFullScreen{ false };
+            bool            shouldClose{ false };
             bool            isClosed{ false };
+
+            //~window_info() { assert( !isFullScreen ); }
         };
 
+        //************************************************************
+        // TODO(klek): Add a freelist container for this instead
+        //utils::free_list<window_info> windows;
         utils::vector<window_info> windows;
         utils::deque<uint32_t> available_slots;
 
@@ -46,7 +54,7 @@ namespace muggy::platform
             if ( available_slots.empty() )
             {
                 id = (uint32_t)windows.size();
-                info.id = id;
+                info.id = window_id(id);
                 windows.emplace_back(info);
             }
             else
@@ -54,7 +62,7 @@ namespace muggy::platform
                 id = available_slots.front();
                 available_slots.pop_front();
                 assert( id != uint32_invalid_id );
-                info.id = id;
+                info.id = window_id(id);
                 windows[id] = info;
             }
             return id;
@@ -66,22 +74,25 @@ namespace muggy::platform
             available_slots.emplace_back(id);
 
             // Debugging, set the current slot to default
-            window_info info{};
-            windows[id] = info;
+            //window_info info{};
+            //windows[id] = info;
         }
+        //************************************************************
 
-        window_info& getFromId( windowId id )
+        window_info& getFromId( window_id id )
         {
-            assert( id < windows.size() );
+            assert( id < windows.capacity() );
             assert( windows[id].windowHandle );
             return windows[id];
         }
 
-        window_info& getFromHandle( GLFWwindow* window )
+        window_id getIdFromHandle( GLFWwindow* window )
         {
-            //windowId id{ (id::id_type)glfwGetWindowUserPointer( window ) };
+            //void* idPtr = glfwGetWindowUserPointer( window ) ;
+            //id::id_type test = *(window_id*)(idPtr);
+            //const window_id id{ (id::id_type) test };
             uint32_t i = 0;
-            for ( ; i < windows.size(); i++ )
+            for ( ; i < windows.capacity(); i++ )
             {
                 window_info& currentSlot { windows[i] };
                 if ( currentSlot.windowHandle == window )
@@ -95,12 +106,20 @@ namespace muggy::platform
                 i = uint32_invalid_id;
             }
            
-            windowId id{ i };
+            const window_id id{ i };
+
+            return id;
+            // return window_id(i);
+        }
+
+        window_info& getFromHandle( GLFWwindow* window )
+        {
+            window_id id{ getIdFromHandle( window ) };
 
             return getFromId( id );
         }
 
-        void setWindowFullScreen( windowId id, bool isFullScreen )
+        void setWindowFullScreen( window_id id, bool isFullScreen )
         {
             // Get the current info structure
             window_info& info{ getFromId( id ) };
@@ -159,19 +178,19 @@ namespace muggy::platform
             }
         }
 
-        bool isWindowFullScreen( windowId id )
+        bool isWindowFullScreen( window_id id )
         {
             window_info& info{ getFromId( id )  };
             return info.isFullScreen;            
         }
 
-        void* getWindowHandle( windowId id )
+        void* getWindowHandle( window_id id )
         {
             window_info& info{ getFromId( id ) };
             return info.windowHandle;
         }
 
-        void setWindowTitle( windowId id, const char* title )
+        void setWindowTitle( window_id id, const char* title )
         {
             window_info& info{ getFromId( id ) };
             glfwSetWindowTitle( info.windowHandle, title );
@@ -180,7 +199,7 @@ namespace muggy::platform
             info.caption = title;
         }
 
-        math::u32v4d getWindowSize( windowId id )
+        math::u32v4d getWindowSize( window_id id )
         {
             window_info& info{ getFromId( id ) };
             
@@ -191,44 +210,40 @@ namespace muggy::platform
                      (uint32_t)area.bottom };
         }
 
-        void resizeWindow( windowId id, uint32_t width, uint32_t height )
+        void resizeWindow( window_id id, uint32_t width, uint32_t height )
         {
             window_info& info{ getFromId( id ) };
 
             // Set new size, this should also trigger the callback
             // thus also letting us store this data
             glfwSetWindowSize( info.windowHandle, width, height );
-
-            // If callback is not called, we need to do below stuff
-            // // Verify that things went well
-            // int32_t localWidth = 0;
-            // int32_t localHeight = 0;
-            // glfwGetWindowSize( info.windowHandle, &localWidth, &localHeight );
-
-            // if ( localWidth != width )
-            // {
-            //     // Well something is wrong
-            //     width = localWidth;
-            // }
-            // if ( localHeight != height )
-            // {
-            //     // Well something is wrong
-            //     height = localHeight;
-            // }
-
-            // // Update the structure
-            // info.width = width;
-            // info.height = height;
         }
 
-        bool isWindowClosed( windowId id )
+        bool isWindowClosed( window_id id )
         {
             window_info& info{ getFromId( id ) };
 
             return info.isClosed;            
         }
 
-        void windowSizeCallback( GLFWwindow* window, int width, int heigth )
+        void updateWindow( window_id id )
+        {
+            window_info& info{ getFromId( id) };
+
+            // Make this context the current one
+            glfwMakeContextCurrent( info.windowHandle );
+            //glClear(GL_COLOR_BUFFER_BIT);
+            glfwPollEvents();
+            glfwSwapBuffers( info.windowHandle );
+        }
+
+        bool shouldWindowClose( window_id id )
+        {
+            window_info& info{ getFromId( id ) };
+            return info.shouldClose;
+        }
+
+        void windowSizeCallback( GLFWwindow* window, int width, int height )
         {
             // Get the id that belongs to the window
             window_info& info{ getFromHandle( window ) };
@@ -239,13 +254,18 @@ namespace muggy::platform
             if ( info.isFullScreen )
             {
                 info.fullScreenArea.width = width;
-                info.fullScreenArea.height = heigth;
+                info.fullScreenArea.height = height;
             }
             else 
             {
                 info.area.width = width;
-                info.area.height = heigth;
+                info.area.height = height;
             }
+
+            // Call the appropriate event via callback function
+            event::windowResizeEvent event( getIdFromHandle( window ), width, height );
+            info.callback( event );
+
         }
 
         void windowPosCallback( GLFWwindow* window, int32_t xpos, int32_t ypos )
@@ -258,6 +278,10 @@ namespace muggy::platform
             // glfwGetWindowPos( info.windowHandle, &(info.left), &(info.top) );
             info.left_top.left = xpos;
             info.left_top.top = ypos;
+
+            // Call the appropriate event via callback function
+            event::windowMovedEvent event( getIdFromHandle( window ), info.left_top );
+            info.callback( event );
         }
 
         void windowCloseCallback( GLFWwindow* window )
@@ -265,14 +289,100 @@ namespace muggy::platform
             // If we end up here, we should close the window
             // Currently we cannot call destroyWindow from this 
             // callback
-            // But I guess we can set the flag isClosed and let
+            // But I guess we can set the flag shouldClose and let
             // the application figure things out
 
             // Get the id that belongs to the window
             window_info& info{ getFromHandle( window ) };
             assert( info.windowHandle == window );
 
+            info.shouldClose = true;
             info.isClosed = true;
+            glfwHideWindow( window );
+
+            // Call the appropriate event via callback function
+            event::windowCloseEvent event( getIdFromHandle( window ) );
+            info.callback( event );
+        }
+
+        void windowKeyCallback( GLFWwindow* window, int key, int scanCode, int action, int mods )
+        {
+            // Get the id that belongs to the window
+            window_info& info{ getFromHandle( window ) };
+            assert( info.windowHandle == window );
+
+            const window_id id{ getIdFromHandle( window ) };
+            switch (action)
+            {
+                case GLFW_PRESS:
+                {
+                    event::keyPressedEvent event( id, key, 0);
+                    info.callback( event );
+                    break;
+                }
+                case GLFW_RELEASE:
+                {
+                    event::keyReleasedEvent event( id, key );
+                    info.callback( event );
+                    break;
+                }
+                case GLFW_REPEAT:
+                {
+                    event::keyPressedEvent event( id, key, 1);
+                    info.callback( event );
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+
+        void windowMouseCallback( GLFWwindow* window, int button, int action, int mods )
+        {
+            // Get the id that belongs to the window
+            window_info& info{ getFromHandle( window ) };
+            assert( info.windowHandle == window );
+
+            const window_id id{ getIdFromHandle( window ) };
+            switch (action)
+            {
+                case GLFW_PRESS:
+                {
+                    event::mouseButtonPressedEvent event( id, button );
+                    info.callback( event );
+                    break;
+                }
+                case GLFW_RELEASE:
+                {
+                    event::mouseButtonReleasedEvent event ( id, button );
+                    info.callback( event );
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+
+        void windowMouseScrolledCallback( GLFWwindow* window, double xOffset, double yOffset )
+        {
+            // Get the id that belongs to the window
+            window_info& info{ getFromHandle( window ) };
+            assert( info.windowHandle == window );
+
+            const window_id id{ getIdFromHandle( window ) };
+            event::mouseScrolledEvent event( id, (float)xOffset, (float)yOffset );
+            info.callback( event );
+        }
+
+        void windowMousePosCallback( GLFWwindow* window, double xPos, double yPos )
+        {
+            // Get the id that belongs to the window
+            window_info& info{ getFromHandle( window ) };
+            assert( info.windowHandle == window );
+
+            const window_id id{ getIdFromHandle( window ) };
+            event::mouseMovedEvent event( id, (float)xPos, (float)yPos );
+            info.callback( event );
         }
 
     } // Anonymous namespace, ie only for use in this cpp-file
@@ -308,8 +418,12 @@ namespace muggy::platform
         info.caption        = { ( init_info && init_info->caption ) ? 
                                   init_info->caption : "Muggy Engine" };
 
+        // Set up the callback
+        info.callback = init_info->callback;
+
         // Open a new window without any context
-        glfwWindowHint( GLFW_CLIENT_API, GLFW_NO_API );
+        //glfwWindowHint( GLFW_CLIENT_API, GLFW_NO_API );
+        // Open the window as invisible first
         glfwWindowHint( GLFW_VISIBLE, GLFW_FALSE );
         info.windowHandle = glfwCreateWindow( info.area.width, 
                                               info.area.height, 
@@ -321,7 +435,8 @@ namespace muggy::platform
         {
             // Well, it failed...
             // Check to see if this was our first window
-            if ( isWindowsListEmpty() )
+            //if ( isWindowsListEmpty() )
+            if ( windows.empty() )
             {
                 // If so, we simply terminate glfw
                 glfwTerminate();
@@ -330,6 +445,9 @@ namespace muggy::platform
             // Then we return an invalid window id
             return { };
         }
+
+        // Make context current
+        glfwMakeContextCurrent( info.windowHandle );
 
         // Setup the close callback
         glfwSetWindowCloseCallback( info.windowHandle, windowCloseCallback );
@@ -340,28 +458,39 @@ namespace muggy::platform
 
         // Get the window size
         glfwSetWindowSize( info.windowHandle, info.area.width, info.area.height );
-        glfwSetWindowSizeCallback(info.windowHandle, windowSizeCallback);
+        glfwSetWindowSizeCallback( info.windowHandle, windowSizeCallback );
+
+        // Set key callback
+        glfwSetKeyCallback( info.windowHandle, windowKeyCallback );
+
+        // Set mouse related callbacks
+        glfwSetMouseButtonCallback( info.windowHandle, windowMouseCallback );
+        glfwSetScrollCallback( info.windowHandle, windowMouseScrolledCallback );
+        glfwSetCursorPosCallback( info.windowHandle, windowMousePosCallback );
 
         // Add our new window to the list
-        window id { addToWindowsList( info ) };
+        const window_id id { addToWindowsList( info ) };
+        //const window_id id{ windows.add( info ) };
         // Finally add this id to the windowUserPointer
-        //glfwSetWindowUserPointer(info.windowHandle, (void*)((uint64_t)(id)) );
+        //glfwSetWindowUserPointer(info.windowHandle, (void*)(&id) );
 
         // Finally show window
         glfwShowWindow( info.windowHandle );
 
-        return id;
+        return window{ id };
     }
 
-    void removeWindow( windowId id )
+    void removeWindow( window_id id )
     {
         window_info& info{ getFromId( id ) };
         glfwDestroyWindow( info.windowHandle );
         removeFromWindowsList( id );
+        //windows.remove( id );
 
         // TODO(klek): Need to determine if this was the last window
         // If it was, we should also do glfwTerminate()
-        if ( isWindowsListEmpty() )
+        //if ( isWindowsListEmpty() )
+        if ( windows.size() == 0 )
         {
             glfwTerminate();
         }

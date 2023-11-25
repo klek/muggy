@@ -11,6 +11,7 @@
 
 #include "../common/common.h"
 #include "platform.h"
+#include "../event/event.h"
 
 #if (defined(GLFW) || defined(GLFW3))
 // Tell GLFW to not include any GL extension loader library
@@ -22,7 +23,7 @@ namespace muggy::platform
 {
     struct window_init_info
     {
-        void*           callback{ nullptr };
+        evFnCallback    callback{ nullptr };
         GLFWwindow*     parent{ nullptr };
         const char*     caption{ nullptr };
         int32_t         left;

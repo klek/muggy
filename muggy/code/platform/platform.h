@@ -23,7 +23,7 @@ namespace muggy::platform
     struct window_init_info;
 
     window createWindow( const window_init_info* const init_info = nullptr );
-    void removeWindow( windowId id );
+    void removeWindow( window_id id );
 }
 
 

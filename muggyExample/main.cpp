@@ -6,13 +6,19 @@
 //  Notes:   
 //********************************************************************
 
+//#pragma comment(lib, "muggy.lib")
+
 #include "muggy.h"
 #include <iostream>
 
 #include "tests/test.h"
 
-#if TEST_WINDOW
+#if TEST_ENTITIES
+#include "tests/testEntities.h"
+#elif TEST_WINDOW
 #include "tests/testWindow.h"
+#else
+#error One of the tests have to be enabled in test.h
 #endif
 
 
@@ -26,16 +32,19 @@ int main( int argc , char* argv[] )
     engineTest test;
 
     if ( test.initialize() ) {
-        bool isRunning = true;
-        uint16_t i = 0;
-        while ( isRunning )
-        {
-            // We need to determine if any windows has closed yet
-            //while ( )
-            if ( !( i++ < ( uint16_invalid_id / 4 ) ) )
-                isRunning = false;
-            test.run();
-        }
+        // bool isRunning = true;
+        // uint16_t i = 0;
+        // while ( isRunning )
+        // {
+        //     // We need to determine if any windows has closed yet
+        //     //while ( )
+        //     if ( !( i++ < ( uint16_invalid_id / 16 ) ) )
+        //         isRunning = false;
+        //     test.run();
+        // }
+
+        // Call the tests run function
+        test.run();
     }
 
     test.shutdown();

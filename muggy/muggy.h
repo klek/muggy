@@ -12,6 +12,9 @@
 // Include common headers, these might be removed later
 #include "code/common/common.h"
 
+// Include event part
+#include "code/event/event.h"
+
 // Include platform part
 #include "code/platform/window.h"
 #include "code/platform/platform.h"

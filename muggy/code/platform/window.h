@@ -14,30 +14,33 @@
 
 namespace muggy::platform
 {
-    DEFINE_TYPED_ID(windowId);
+    DEFINE_TYPED_ID(window_id);
 
     class window
     {
     public:
-        constexpr explicit window( windowId id) : m_Id(id) {}
+        constexpr explicit window( window_id id ) : m_Id(id) {}
         constexpr window( ) : m_Id( id::invalid_id ) { }
-        constexpr windowId getId( ) const { return m_Id; }
-        //constexpr bool isValid( ) const { return id::isValid(m_Id); }
-        bool isValid( ) const { return id::isValid(m_Id); }
+        constexpr window_id getId( ) const { return m_Id; }
+        constexpr bool isValid( ) const { return id::isValid(m_Id); }
 
         void setFullScreen( bool isFullScreen ) const;
         //void setWindowedFullScreen ( bool isFullScreen ) const;
         bool isFullScreen( void ) const;
         void* handle( void ) const;
-        void setCaption(const char* caption) const;
+        void setCaption( const char* caption ) const;
         math::u32v4d size( ) const;
         void resize( uint32_t width, uint32_t height ) const;
         uint32_t getWidth( void ) const;
         uint32_t getHeight( void ) const;
         bool isClosed( void ) const;
 
+        // Needed for GLFW
+        void update( void ) const;
+        bool shouldClose( void ) const;
+
     private:
-        windowId m_Id;
+        window_id m_Id{ id::invalid_id };
     };
 }
 
