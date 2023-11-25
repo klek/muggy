@@ -15,30 +15,40 @@ namespace muggy::math
     // Defining sine function and overloads
     //
     // TODO(klek): Consider adding own implementations for these functions
-    double maths_sin(double x);
-    float maths_sin(float x);
-    long double maths_sin(long double x);
+    template <typename T>
+    T maths_sin( T x );
+//    float maths_sin(float x);
+//    long double maths_sin(long double x);
 
     //
     // Defining cosine functions and overloads
     //
     // TODO(klek): Consider adding own implementations for these functions
-    double maths_cos(double x);
-    float maths_cos(float x);
-    long double maths_cos(long double x);
+    template <typename T>
+    T maths_cos( T x );
+//    float maths_cos(float x);
+//    long double maths_cos(long double x);
 
     //
     // Defining cosine functions and overloads
     //
     // TODO(klek): Consider adding own implementations for these functions
-    double maths_tan(double x);
-    float maths_tan(float x);
-    long double maths_tan(long double x);
+    template <typename T>
+    T maths_tan( T x );
+//    float maths_tan(float x);
+//    long double maths_tan(long double x);
 
     //
     // Defining a toRadians function
     //
-    float toRadians(float degrees);
+    template <typename T>
+    T toRadians( T degrees );
 }
+
+#ifndef USE_MATH_EXTERNAL
+#define INCLUDE_MATHS_FUNCS_CPP            1
+#include "maths_funcs.cpp"
+#undef INCLUDE_MATHS_FUNCS_CPP
+#endif
 
 #endif

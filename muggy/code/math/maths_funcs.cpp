@@ -5,6 +5,7 @@
 //  Author:  klek
 //  Notes:   
 //********************************************************************
+#ifdef INCLUDE_MATHS_FUNCS_CPP
 
 #include "maths_funcs.h"
 #include <cmath>
@@ -15,65 +16,41 @@ namespace muggy::math
     // Defining sine function and overloads
     //
     // TODO(klek): Consider adding own implementations for these functions
-    double maths_sin(double x) 
+    template <typename T>
+    T maths_sin( T x ) 
     { 
-        return sin(x); 
-    }
-
-    float maths_sin(float x) 
-    { 
-        return sin(x); 
-    }
-
-    long double maths_sin(long double x) 
-    { 
-        return sin(x); 
+        return sin( x ); 
     }
 
     //
     // Defining cosine functions and overloads
     //
     // TODO(klek): Consider adding own implementations for these functions
-    double maths_cos(double x)
+    template <typename T>
+    T maths_cos( T x )
     {
-        return cos(x); 
-    }
-
-    float maths_cos(float x)
-    {
-        return cos(x); 
-    }
-
-    long double maths_cos(long double x)
-    {
-        return cos(x); 
+        return cos( x ); 
     }
 
     //
     // Defining cosine functions and overloads
     //
     // TODO(klek): Consider adding own implementations for these functions
-    double maths_tan(double x)
+    template <typename T>
+    T maths_tan( T x )
     {
-        return tan(x); 
-    }
-
-    float maths_tan(float x)
-    {
-        return tan(x); 
-    }
-
-    long double maths_tan(long double x)
-    {
-        return tan(x); 
+        return tan( x ); 
     }
     
     //
     // Defining a toRadians function
     //
-    float toRadians(float degrees)
+    template <typename T>
+    T toRadians( T degrees )
     {
-        return degrees * (M_PI / 180.0f);
+        return degrees * ( M_PI / T( 180.0f ) );
     }
 
 } // namespace muggy:math
+
+#endif
