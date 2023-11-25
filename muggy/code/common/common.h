@@ -9,6 +9,18 @@
 #if !defined(COMMON_H)
 #define COMMON_H
 
+//#pragma warning(disables 4530) // Disable exception warning
+
+// Defining global macros
+#ifdef DEBUG_BUILD
+#define DEBUG_OP(x)         x
+#else
+#define DEBUG_OP(x)         
+#endif
+
+#define BIT(x)              (1 << x)
+
+
 // Common includes for the the engine
 // C/C++ 
 #include <stdint.h>
@@ -16,24 +28,15 @@
 #include <typeinfo>
 #include <memory>
 #include <unordered_map>
-
-// Set internal macros
-#ifdef Debug
-#define DEBUG_BUILD
-#else
-#undef _DEBUG
-#endif
+#include <iostream>
 
 // Internal common headers
-#include "id.h"
-#include "myTypes.h"
 #include "../utilities/utilities.h"
+#include "myTypes.h"
+#include "id.h"
 
-#ifdef DEBUG_BUILD
-#define DEBUG_OP(x)         x
-#else
-#define DEBUG_OP(x)         (void(0))
-#endif
+// Including math library
+#include "../math/math.h"
 
 
 #endif
