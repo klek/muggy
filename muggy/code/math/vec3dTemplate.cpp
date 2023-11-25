@@ -31,11 +31,19 @@ namespace muggy::math
     {}
 
     template <typename T>
-    vec3dTemplate<T>::vec3dTemplate( const vec3dTemplate<T>& _v)
+    vec3dTemplate<T>::vec3dTemplate( const vec3dTemplate<T>& _v )
      : 
         x( _v.x ),
         y( _v.y ),
         z( _v.z )
+    {}
+
+    template <typename T>
+    vec3dTemplate<T>::vec3dTemplate( const T (&_arr)[3] )
+     : 
+        x( _arr[0] ),
+        y( _arr[1] ),
+        z( _arr[2] )
     {}
 
     // Member functions

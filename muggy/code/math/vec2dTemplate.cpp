@@ -27,10 +27,17 @@ namespace muggy::math
     {}
 
     template <typename T>
-    vec2dTemplate<T>::vec2dTemplate( const vec2dTemplate<T>& _v)
+    vec2dTemplate<T>::vec2dTemplate( const vec2dTemplate<T>& _v )
      : 
         x( _v.x ),
         y( _v.y )
+    {}
+
+    template <typename T>
+    vec2dTemplate<T>::vec2dTemplate( const T (&_arr)[2] )
+     : 
+        x( _arr[0] ),
+        y( _arr[1] )
     {}
 
     // Member functions

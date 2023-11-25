@@ -38,7 +38,8 @@ namespace muggy::math
         vec3dTemplate( const vType& _x, 
                        const vType& _y, 
                        const vType& _z );
-        vec3dTemplate( const vec3Type& _v);
+        vec3dTemplate( const vec3Type& _v );
+        explicit vec3dTemplate( const vType (&_arr)[3] );
 
         // Member functions
         // Implement basic math functions for 3D vectors

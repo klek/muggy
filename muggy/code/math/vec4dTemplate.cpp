@@ -34,12 +34,21 @@ namespace muggy::math
     {}
 
     template <typename T>
-    vec4dTemplate<T>::vec4dTemplate( const vec4dTemplate<T>& _v)
+    vec4dTemplate<T>::vec4dTemplate( const vec4dTemplate<T>& _v )
      : 
         x( _v.x ),
         y( _v.y ),
         z( _v.z ),
         w( _v.w )
+    {}
+
+    template <typename T>
+    vec4dTemplate<T>::vec4dTemplate( const T (&_arr)[4] )
+     : 
+        x( _arr[0] ),
+        y( _arr[1] ),
+        z( _arr[2] ),
+        w( _arr[3] )
     {}
 
     // Member functions

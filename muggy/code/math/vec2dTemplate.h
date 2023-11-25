@@ -37,7 +37,8 @@ namespace muggy::math
         vec2dTemplate();
         vec2dTemplate( const vType& _x, 
                        const vType& _y );
-        vec2dTemplate( const vec2Type& _v);
+        vec2dTemplate( const vec2Type& _v );
+        vec2dTemplate( const vType (&_arr)[2] );
 
         // Member functions
         // Implement basic math functions for 2D vectors

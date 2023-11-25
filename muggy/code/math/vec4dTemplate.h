@@ -42,7 +42,8 @@ namespace muggy::math
                        const vType& _y, 
                        const vType& _z, 
                        const vType& _w );
-        vec4dTemplate( const vec4Type& _v);
+        vec4dTemplate( const vec4Type& _v );
+        vec4dTemplate( const vType (&_arr)[4] );
 
         // Member functions
         // Implement basic math functions for 4D vectors
