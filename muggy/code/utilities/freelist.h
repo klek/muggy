@@ -14,6 +14,11 @@
 
 namespace muggy::utils
 {
+
+#if USE_STL_VECTOR
+#pragma message("WARNING: Using utils::free_list with std::vector results in duplicate calls to class destructor")
+#endif
+
     template < typename T>
     class free_list
     {
@@ -30,6 +35,9 @@ namespace muggy::utils
         ~free_list()
         {
             assert(!m_Size);
+#if USE_STL_VECTOR
+            memset( m_Array.data(), 0, m_Array.size() * sizeof(T) );
+#endif
         }
 
         template < class... params>
@@ -127,10 +135,13 @@ namespace muggy::utils
                 return true;
             }
         }
-
-        utils::vector<T>    m_Array;
-        uint32_t            m_NextFreeIndex{ uint32_invalid_id };
-        uint32_t            m_Size{ 0 };
+#if USE_STL_VECTOR
+        utils::vector<T>        m_Array;
+#else
+        utils::vector<T, false> m_Array;
+#endif
+        uint32_t                m_NextFreeIndex{ uint32_invalid_id };
+        uint32_t                m_Size{ 0 };
     };
 } // namespace muggy::utils
 

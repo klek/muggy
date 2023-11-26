@@ -9,7 +9,7 @@
 #if !defined(UTILITIES_H)
 #define UTILITIES_H
 
-#define USE_STL_VECTOR      1
+#define USE_STL_VECTOR      0
 #define USE_STL_DEQUE       1
 
 #if USE_STL_VECTOR
@@ -18,11 +18,31 @@ namespace muggy::utils
 {
     template <typename T>
     using vector = std::vector<T>;
+
+    template <typename T>
+    void erase_unordered( T& v, size_t index )
+    {
+        if ( v.size() > 1 )
+        {
+            // Swap item to erase with the last item
+            std::iter_swap( v.begin() + index, v.end() - 1 );
+            v.pop_back();
+        }
+        else
+        {
+            v.clear();
+        }
+    }
 }
 #else
+#include "vector.h"
 namespace muggy::utils
 {
-
+    template <typename T>
+    void erase_unordered( T& v, size_t index )
+    {
+        v.erase_unordered( index );
+    }
 }
 #endif
 
