@@ -12,7 +12,8 @@
 #include <thread>
 
 // Defines for test to run
-#define TEST_WINDOW             1
+#define TEST_ENTITIES           1
+#define TEST_WINDOW             0
 
 class test
 {

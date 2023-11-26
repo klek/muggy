@@ -106,6 +106,11 @@ target_link_libraries ( ${PROJECT_NAME}
 #                        PRIVATE GLEW 
 )
 
+# Add compile defines such as DEBUG_BUILD etc
+target_compile_definitions( muggy 
+                            PUBLIC  $<$<CONFIG:Debug>:DEBUG_BUILD>
+)
+
 if ( WIN32 )
     # Add a suffix to the import library to avoid naming conflicts
     set_target_properties(muggy PROPERTIES IMPORT_SUFFIX "dll.lib")
