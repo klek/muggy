@@ -82,21 +82,32 @@ namespace muggy::utils
             m_Size--;
         }
 
+        // Returns the amount of elements currently stored in the 
+        // free_list
         constexpr uint32_t size() const
         {
             return m_Size;
         }
 
+        // Returns the size of the vector that is being used
+        // in the free_list
+        // NOTE(klek): This can be different from free_lists
+        //             internal size!
         constexpr uint32_t capacity() const
         {
             return m_Array.size();
         }
 
+        // Return if the free_list is currently empty
+        // NOTE(klek): This does not mean that the vector that
+        //             is being used by the free_list, is empty!
         constexpr bool empty() const
         {
-            return ( m_Array.size() == 0 );
+            return ( m_Size == 0 );
         }
 
+        // Indexing operator, returns a reference to the item at
+        // the specified index
         [[nodiscard]] constexpr T& operator[]( uint32_t id )
         {
             // Check if the this slot was already removed
@@ -105,6 +116,8 @@ namespace muggy::utils
             return m_Array[id];
         }
 
+        // Indexing operator, returns a constant reference to the
+        // item at the specified index
         [[nodiscard]] constexpr const T& operator[]( uint32_t id ) const
         {
             // Check if the this slot was already removed

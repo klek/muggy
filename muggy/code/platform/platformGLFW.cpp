@@ -6,13 +6,11 @@
 //  Notes:   
 //********************************************************************
 
-//#include "platformGLFW.h"
 #include "platformTypes.h"
 #include "platform.h"
 #include "../math/math.h"
 #include "../event/event.h"
-//#include <algorithm>
-//#include "../utilities/freelist.h"
+#include "../utilities/freelist.h"
 
 #if (defined(GLFW) || defined(GLFW3))
 
@@ -25,7 +23,7 @@ namespace muggy::platform
         {
             GLFWwindow*     windowHandle{ nullptr };
             evFnCallback    callback{ nullptr };
-            window_id        id{ id::invalid_id };
+            window_id       id{ id::invalid_id };
             const char*     caption{ nullptr };
             math::POINT     left_top{ 0, 0 };
             math::RECT      area{ 0, 0, 640, 480 };
@@ -33,51 +31,9 @@ namespace muggy::platform
             bool            isFullScreen{ false };
             bool            shouldClose{ false };
             bool            isClosed{ false };
-
-            //~window_info() { assert( !isFullScreen ); }
         };
 
-        //************************************************************
-        // TODO(klek): Add a freelist container for this instead
-        //utils::free_list<window_info> windows;
-        utils::vector<window_info> windows;
-        utils::deque<uint32_t> available_slots;
-
-        bool isWindowsListEmpty( void )
-        {
-            return ( windows.size() == available_slots.size() );
-        }
-
-        uint32_t addToWindowsList(window_info info)
-        {
-            uint32_t id{ uint32_invalid_id };
-            if ( available_slots.empty() )
-            {
-                id = (uint32_t)windows.size();
-                info.id = window_id(id);
-                windows.emplace_back(info);
-            }
-            else
-            {
-                id = available_slots.front();
-                available_slots.pop_front();
-                assert( id != uint32_invalid_id );
-                info.id = window_id(id);
-                windows[id] = info;
-            }
-            return id;
-        }
-
-        void removeFromWindowsList( uint32_t id )
-        {
-            assert( id < windows.size() );
-            available_slots.emplace_back(id);
-
-            // Debugging, set the current slot to default
-            //window_info info{};
-            //windows[id] = info;
-        }
-        //************************************************************
+        utils::free_list<window_info> windows;
 
         window_info& getFromId( window_id id )
         {
@@ -101,7 +57,7 @@ namespace muggy::platform
                 }
             }
 
-            if ( i == windows.size() )
+            if ( i == windows.capacity() )
             {
                 i = uint32_invalid_id;
             }
@@ -469,8 +425,8 @@ namespace muggy::platform
         glfwSetCursorPosCallback( info.windowHandle, windowMousePosCallback );
 
         // Add our new window to the list
-        const window_id id { addToWindowsList( info ) };
-        //const window_id id{ windows.add( info ) };
+        //const window_id id { addToWindowsList( info ) };
+        const window_id id{ windows.add( info ) };
         // Finally add this id to the windowUserPointer
         //glfwSetWindowUserPointer(info.windowHandle, (void*)(&id) );
 
@@ -484,13 +440,13 @@ namespace muggy::platform
     {
         window_info& info{ getFromId( id ) };
         glfwDestroyWindow( info.windowHandle );
-        removeFromWindowsList( id );
-        //windows.remove( id );
+        //removeFromWindowsList( id );
+        windows.remove( id );
 
         // TODO(klek): Need to determine if this was the last window
         // If it was, we should also do glfwTerminate()
         //if ( isWindowsListEmpty() )
-        if ( windows.size() == 0 )
+        if ( windows.empty() )
         {
             glfwTerminate();
         }
