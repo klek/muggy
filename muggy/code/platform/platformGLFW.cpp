@@ -375,6 +375,7 @@ namespace muggy::platform
                                   init_info->caption : "Muggy Engine" };
 
         // Set up the callback
+        // TODO(klek): Setup a default callback!
         info.callback = init_info->callback;
 
         // Open a new window without any context
