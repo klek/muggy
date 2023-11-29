@@ -25,10 +25,12 @@
 // C/C++ 
 #include <stdint.h>
 #include <assert.h>
+#include <cstring>
 #include <typeinfo>
 #include <memory>
 #include <unordered_map>
 #include <iostream>
+
 
 // Internal common headers
 #include "../utilities/utilities.h"
