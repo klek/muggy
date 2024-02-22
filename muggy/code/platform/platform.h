@@ -13,9 +13,9 @@
 #include "window.h"
 
 // Defining GLFW here, this should likely be done in other places
-#ifndef GLFW
-#define GLFW
-#endif
+// #ifndef GLFW
+// #define GLFW
+// #endif
 
 
 namespace muggy::platform

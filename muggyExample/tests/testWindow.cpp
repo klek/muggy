@@ -18,8 +18,9 @@
 
 muggy::platform::window         windows[NR_OF_WINDOWS];
 static uint32_t iteration = 0;
+bool isRunning { true };
 
-bool engineTest::closeWindow( muggy::event::windowCloseEvent& e )
+static bool closeWindow( muggy::event::windowCloseEvent& e )
 {
     // If we get here we should close the window
     //muggy::platform::removeWindow( e.getId() );
@@ -36,18 +37,18 @@ bool engineTest::closeWindow( muggy::event::windowCloseEvent& e )
 
     if ( count == NR_OF_WINDOWS )
     {
-        m_IsRunning = false;
+        isRunning = false;
     }
 
     // Return true to indicate we have dealt with the event
     return true;
 }
 
-void engineTest::onEventCallback( muggy::event::event& e )
+static void onEventCallback( muggy::event::event& e )
 {
     muggy::event::eventDispatcher dispatcher(e);
 
-    dispatcher.dispatch<muggy::event::windowCloseEvent>(BIND_FN(engineTest::closeWindow));
+    dispatcher.dispatch<muggy::event::windowCloseEvent>( &closeWindow );
 
     std::cout << e << std::endl;
 }
@@ -57,10 +58,10 @@ bool engineTest::initialize( void )
 {
     muggy::platform::window_init_info info [] 
     {
-        { BIND_FN(engineTest::onEventCallback), NULL, "Window Nr 1", 0, 0, 640, 480 },
-        { BIND_FN(engineTest::onEventCallback), NULL, "Window Nr 2", 100, 100, 480, 640 },
-        { BIND_FN(engineTest::onEventCallback), NULL, "Window Nr 3", 200, 200, 300, 200 },
-        { BIND_FN(engineTest::onEventCallback), NULL, "Window Nr 4", 300, 300, 800, 400 }
+        { &onEventCallback, NULL, "Window Nr 1", 0, 0, 640, 480 },
+        { &onEventCallback, NULL, "Window Nr 2", 100, 100, 480, 640 },
+        { &onEventCallback, NULL, "Window Nr 3", 200, 200, 300, 200 },
+        { &onEventCallback, NULL, "Window Nr 4", 300, 300, 800, 400 }
     };
 
     for ( uint32_t i = 0; i < NR_OF_WINDOWS; i++ )
@@ -92,7 +93,7 @@ void engineTest::run( void )
     //     iteration = 0;
     // }
 
-    while ( m_IsRunning ) 
+    while ( isRunning ) 
     {
         bool allClosed = false;
         for ( uint32_t i = 0; i < NR_OF_WINDOWS; i++ )

@@ -31,13 +31,18 @@ namespace muggy::platform
             bool            isFullScreen{ false };
             bool            shouldClose{ false };
             bool            isClosed{ false };
+
+            ~window_info()
+            {
+                std::cout << "Destroyed" << std::endl;
+            }
         };
 
         utils::free_list<window_info> windows;
 
         window_info& getFromId( window_id id )
         {
-            assert( id < windows.capacity() );
+            //assert( id < windows.capacity() );
             assert( windows[id].windowHandle );
             return windows[id];
         }
@@ -159,7 +164,7 @@ namespace muggy::platform
         {
             window_info& info{ getFromId( id ) };
             
-            math::RECT area{ info.isFullScreen ? info.fullScreenArea : info.area };
+            math::RECT& area{ info.isFullScreen ? info.fullScreenArea : info.area };
             return { (uint32_t)area.left, 
                      (uint32_t)area.top, 
                      (uint32_t)area.right, 
@@ -341,6 +346,13 @@ namespace muggy::platform
             info.callback( event );
         }
 
+        void windowDefaultCallback( muggy::event::event& e )
+        {
+            // TODO(klek): Find a better solution for this!
+            // Hang here...we should always have a callback defined
+            while( true );
+        }
+
     } // Anonymous namespace, ie only for use in this cpp-file
 
     window createWindow( const window_init_info* const init_info /* = nullptr*/)
@@ -376,7 +388,8 @@ namespace muggy::platform
 
         // Set up the callback
         // TODO(klek): Setup a default callback!
-        info.callback = init_info->callback;
+        info.callback = { ( init_info && init_info->callback ) ? 
+                            init_info->callback : &windowDefaultCallback };
 
         // Open a new window without any context
         //glfwWindowHint( GLFW_CLIENT_API, GLFW_NO_API );

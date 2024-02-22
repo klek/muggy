@@ -24,11 +24,11 @@ public:
     void shutdown( void ) override;
 
     // Additional functions for this test
-    bool closeWindow( muggy::event::windowCloseEvent& e );
-    void onEventCallback( muggy::event::event& e);
+//    bool closeWindow( muggy::event::windowCloseEvent& e );
+//    void onEventCallback( muggy::event::event& e);
 
 private:
-    bool m_IsRunning = true;
+//    bool m_IsRunning = true;
 };
 
 #endif
