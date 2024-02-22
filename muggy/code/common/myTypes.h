@@ -9,7 +9,7 @@
 #if !defined(MY_TYPES_H)
 #define MY_TYPES_H
 
-#include <stdint.h>
+#include <cstdint>
 
 constexpr uint64_t uint64_invalid_id{ 0xFFFF'FFFF'FFFF'FFFFu };
 constexpr uint32_t uint32_invalid_id{ 0xFFFF'FFFFu };

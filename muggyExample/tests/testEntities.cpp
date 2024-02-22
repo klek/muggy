@@ -61,7 +61,7 @@ void engineTest::createRandom( void )
         game_entity::entity e{ game_entity::createGameEntity(entityInfo) };
         assert( e.isValid() && id::isValid( e.getId() ) );
         m_Entities.push_back( e );
-        assert( game_entity::isAlive( e ) );
+        assert( game_entity::isAlive( e.getId() ) );
         count--;
     }
 }
@@ -78,9 +78,9 @@ void engineTest::removeRandom( void )
         assert( e.isValid() && id::isValid( e.getId() ) );
         if ( e.isValid() )
         {
-            game_entity::removeGameEntity(e);
+            game_entity::removeGameEntity(e.getId());
             m_Entities.erase( m_Entities.begin() + index );
-            assert( !game_entity::isAlive( e ) );
+            assert( !game_entity::isAlive( e.getId() ) );
             m_Removed++;
         }
         count--;

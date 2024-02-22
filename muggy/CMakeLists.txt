@@ -1,4 +1,4 @@
-cmake_minimum_required ( VERSION 3.0.0 )
+cmake_minimum_required ( VERSION 3.0...3.20 )
 set ( PROJECT_NAME muggy )
 project ( ${PROJECT_NAME} VERSION 0.1.0 LANGUAGES C CXX )
 
@@ -24,6 +24,8 @@ set ( OutputDir "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${CMAKE_SYSTEM_NAME}${OSBitn
 set ( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OutputDir} )
 set ( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OutputDir} )
 set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OutputDir} )
+set ( BinaryDir "${CMAKE_CURRENT_SOURCE_DIR}/build" )
+set ( CMAKE_BINARY_DIR ${BinaryDir} )
 
 # Download all submodules
 find_package ( Git REQUIRED )
@@ -78,16 +80,21 @@ include_directories( ${IncDir} )
 # Add source files
 file ( GLOB_RECURSE SrcFiles
        ${CMAKE_CURRENT_SOURCE_DIR}/code/*.cpp )
+# Add engineAPI files
+file ( GLOB_RECURSE apiFiles
+       ${CMAKE_CURRENT_SOURCE_DIR}/engineAPI/*.cpp )
 
-# Add the source to the library
+# Add the sources to the library
 add_library ( ${PROJECT_NAME} 
-#              SHARED muggy.cpp 
-              STATIC muggy.cpp 
+              SHARED muggy.cpp 
+#              STATIC muggy.cpp 
               ${SrcFiles}
+              ${apiFiles}
 )
 
 # For debugging
 message( STATUS "****** ${SrcFiles} ******" )
+message( STATUS "****** ${apiFiles} ******" )
 
 # Add target include directories
 target_include_directories ( ${PROJECT_NAME}
@@ -95,9 +102,9 @@ target_include_directories ( ${PROJECT_NAME}
 )
 
 # Add target link directories
-target_link_directories ( ${PROJECT_NAME} 
-                          PRIVATE thirdparty/glfw/src 
-)
+#target_link_directories ( ${PROJECT_NAME} 
+#                          PRIVATE thirdparty/glfw/src 
+#)
 
 # Add target libraries to our this library
 target_link_libraries ( ${PROJECT_NAME}
@@ -107,13 +114,25 @@ target_link_libraries ( ${PROJECT_NAME}
 )
 
 # Add compile defines such as DEBUG_BUILD etc
-target_compile_definitions( muggy 
-                            PUBLIC  $<$<CONFIG:Debug>:DEBUG_BUILD>
+target_compile_definitions ( ${PROJECT_NAME}
+                             PUBLIC  $<$<CONFIG:Debug>:DEBUG_BUILD>
+                             PUBLIC  $<$<CONFIG:Debug>:GLFW>
 )
+
+# Add compile defines based on platform
+if ( WIN32 )
+    # For windows we currently assume MSVC compiler
+    target_compile_definitions( ${PROJECT_NAME}
+                                PUBLIC $<$<CONFIG:Debug>:MSVC> )
+elseif( UNIX )
+    # For unix we currently assume GCC compiler
+    target_compile_definitions( ${PROJECT_NAME}
+                                PUBLIC $<$<CONFIG:Debug>:GCC> )
+endif()
 
 if ( WIN32 )
     # Add a suffix to the import library to avoid naming conflicts
-    set_target_properties(muggy PROPERTIES IMPORT_SUFFIX "dll.lib")
+    set_target_properties ( ${PROJECT_NAME} PROPERTIES IMPORT_SUFFIX "dll.lib" )
 endif ()
 
 set ( CPACK_PROJECT_NAME ${PROJECT_NAME} )

@@ -85,7 +85,20 @@ namespace muggy::math
     typedef i32v4d                      RECT;
     typedef i32v3d                      TRIANGLE;
     typedef i32v2d                      POINT;
+
+    // Floating point objects
+    typedef fv4d                        QUATERNION;
     
+    // NOTE(klek): This is a temporary solution to allow conversion
+    //             between Euler to Quaternion
+    // TODO(klek): Implement Quaternion class or similar functionality
+    //             in the v4d class
+    //
+    // Defining Quaternion conversion functions
+    //
+    math::fv4d toQuaternionFromEuler( float& roll, float& pitch, float& yaw );
+    math::fv4d toQuaternionFromEuler( math::fv3d euler );
+
 } // namespace muggy::math
 
 

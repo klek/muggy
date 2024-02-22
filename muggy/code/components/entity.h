@@ -19,6 +19,12 @@ namespace muggy
     {
         struct init_info;
     } // namespace transform
+
+    // Forward declaration of the scripts init_info
+    namespace script
+    {
+        struct init_info;
+    } // namespace script
     // ***************************************************************
 
     namespace game_entity
@@ -26,17 +32,16 @@ namespace muggy
         struct entity_info
         {
             // should contain a transform
-            transform::init_info* transform{ nullptr };
+            transform::init_info*   transform{ nullptr };
+            script::init_info*      script{ nullptr };
         };
     
         entity createGameEntity( const entity_info& info );
-        void removeGameEntity( entity e );
-        bool isAlive( entity e );
+        void removeGameEntity( entity_id id );
+        bool isAlive( entity_id id );
 
     } // namespace game_entity
     
-    
-
 } // namespace muggy
 
 

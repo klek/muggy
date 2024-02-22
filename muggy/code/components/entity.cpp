@@ -8,12 +8,14 @@
 
 #include "entity.h"
 #include "transform.h"
+#include "script.h"
 
 namespace muggy::game_entity
 {
     namespace 
     {
         utils::vector<transform::component> transforms;
+        utils::vector<script::component>    scripts;
         
         utils::vector<id::generation_type>  generations;
         utils::deque<entity_id>             freeIds;
@@ -37,7 +39,7 @@ namespace muggy::game_entity
         {
             // Reusing available slots
             id = freeIds.front();
-            assert( !isAlive( entity( id ) ) );
+            assert( !isAlive( id ) );
             freeIds.pop_front();
             id = entity_id{ id::newGeneration( id ) };
             ++generations[ id::index( id ) ];
@@ -55,6 +57,7 @@ namespace muggy::game_entity
             // NOTE(klek): Here we call emplace_back instead of resize()
             //             to keep the number of memory allocations low
             transforms.emplace_back();
+            scripts.emplace_back();
         }
 
         const entity newEntity{ id };
@@ -70,30 +73,47 @@ namespace muggy::game_entity
             return {};
         }
 
+        // Create script compontent
+        if ( info.script && info.script->scriptCreator )
+        {
+            assert( !scripts[ index ].isValid() );
+            scripts[ index ] = script::createScript( *info.script, 
+                                                      newEntity );
+            // if ( !scripts[ index ].isValid() )
+            // {
+            //     // Return a default entity (ie invalid)
+            //     return {};
+            // }
+            assert( scripts[ index ].isValid() );
+        }
+
         return newEntity;
     }
 
-    void removeGameEntity( entity e )
+    void removeGameEntity( entity_id id )
     {
-        const entity_id id{ e.getId() };
         const id::id_type index{ id::index( id ) };
         // Check that this entity is alive
-        assert( isAlive(e) );
-        if ( isAlive(e) )
+        assert( isAlive( id ) );
+
+        // Check for a potential script attached to this entity
+        if ( scripts[ index ].isValid() )
         {
-            // Remove transforms
-            transform::removeTransform( transforms[ index ] );
-            // Replace the slot with a default component (ie invalid)
-            transforms[ index ] = {};
-            freeIds.push_back( id );
+            // Remove that script
+            script::removeScript( scripts[ index ] );
+            scripts[ index ] = {};
         }
+        // Remove transforms
+        transform::removeTransform( transforms[ index ] );
+        // Replace the slot with a default component (ie invalid)
+        transforms[ index ] = {};
+        freeIds.push_back( id );
     }
 
-    bool isAlive( entity e )
+    bool isAlive( entity_id id )
     {
         // DEBUG: Check that the entity is valid
-        assert( e.isValid() );
-        const entity_id id{ e.getId() };
+        assert( id::isValid( id ) );
         const id::id_type index{ id::index( id ) };
         // DEBUG: Check that index is withing the size of generations
         assert( index < generations.size() );
@@ -110,9 +130,17 @@ namespace muggy::game_entity
     transform::component entity::getTransform() const
     {
         // DEBUG: Check that the entity is valid
-        assert( isAlive( *this ) );
+        assert( isAlive( m_Id ) );
         const id::id_type index{ id::index( m_Id ) };
         return transforms[ index ];
+    }
+
+    script::component entity::getScript() const
+    {
+        // DEBUG: Check that the entity is valid
+        assert( isAlive( m_Id ) );
+        const id::id_type index{ id::index( m_Id ) };
+        return scripts[ index ];
     }
 
 } // namespace muggy::entity

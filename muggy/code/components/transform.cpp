@@ -41,10 +41,11 @@ namespace muggy::transform
             scales.emplace_back( info.scale );
         }
 
-        return component( transform_id{ (id::id_type)positions.size() - 1 } );
+        //return component( transform_id{ (id::id_type)positions.size() - 1 } );
+        return component{ transform_id{ e.getId() } };
     }
 
-    void removeTransform( component c )
+    void removeTransform( [[maybe_unused]] component c )
     {
         assert( c.isValid() );
     }

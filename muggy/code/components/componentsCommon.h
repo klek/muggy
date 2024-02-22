@@ -12,9 +12,10 @@
 #include "../common/common.h"
 #include "../common/id.h"
 
-// Including the class definitons from the engineAPI
+// Including the class definitions from the engineAPI
 #include "../../engineAPI/gameEntity.h"
 #include "../../engineAPI/componentTransform.h"
+#include "../../engineAPI/componentScript.h"
 
 
 
