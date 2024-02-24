@@ -9,6 +9,7 @@
 
 #include "maths_funcs.h"
 #include <cmath>
+#include "mathTypes.h"
 
 namespace muggy::math
 {
@@ -48,7 +49,8 @@ namespace muggy::math
     template <typename T>
     T toRadians( T degrees )
     {
-        return degrees * ( M_PI / T( 180.0f ) );
+//        return degrees * ( M_PI / T( 180.0f ) );
+        return degrees * ( MUGGY_PI / T( 180.0f ) );
     }
 
 } // namespace muggy:math

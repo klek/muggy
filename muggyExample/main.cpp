@@ -17,6 +17,10 @@
 #include "tests/testEntities.h"
 #elif TEST_WINDOW
 #include "tests/testWindow.h"
+#elif TEST_FREELIST
+#include "tests/testFreelist.h"
+#elif TEST_VECTOR
+#include "tests/testVector.h"
 #else
 #error One of the tests have to be enabled in test.h
 #endif

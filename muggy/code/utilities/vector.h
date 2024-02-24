@@ -34,14 +34,15 @@ namespace muggy::utils
             resize( count, value );
         }
 
-        template <typename it>//, typename = std::enable_if_t<std::_Is_iterator_v<it>>>
-        constexpr explicit vector( it first, it last )
-        {
-            for ( ; first != last ; ++first )
-            {
-                emplace_back(*first);
-            }
-        }
+        // NOTE(klek): This does not work properly
+        // template <typename it, typename = std::enable_if_t<std::_Is_iterator_v<it>>>
+        // constexpr explicit vector( it first, it last )
+        // {
+        //     for ( ; first != last ; ++first )
+        //     {
+        //         emplace_back(*first);
+        //     }
+        // }
 
         // Copy-constructor, constructs by copying another vector
         // The items in the copied vector must be copyable!
@@ -140,7 +141,7 @@ namespace muggy::utils
         // default value
         constexpr void resize( uint64_t newSize )
         {
-            static_assert( std::is_default_constructible_v<T>,
+            static_assert( std::is_default_constructible<T>::value,
                            "Type must be default-constructible");
             
             // Do we need to reserve more memory?
@@ -167,9 +168,11 @@ namespace muggy::utils
             assert( newSize == m_Size );
         }
 
+        // Resizes the vector and initializes new items with the
+        // value provided
         constexpr void resize( uint64_t newSize, T* value )
         {
-            static_assert( std::is_copy_constructible_v<T>,
+            static_assert( std::is_copy_constructible<T>::value,
                            "Type must be copy-constructible");
             
             // Do we need to reserve more memory?
