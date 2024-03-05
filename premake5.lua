@@ -155,8 +155,8 @@ project "muggyExample"
         "%{wks.location}/muggyExample",
 --        "%{wks.location}/muggyExample/tests",
         "%{wks.location}/muggy",
---        "%{wks.location}/muggy/platform"
---        "%{wks.location}/muggy/thirdparty/glfw/include" 
+--        "%{wks.location}/muggy/platform",
+        "%{wks.location}/muggy/thirdparty/glfw/include" 
     }
     libdirs
     {
@@ -179,7 +179,7 @@ project "muggyExample"
 --            "-Wno-class-memaccess", 
 --            "-Wno-reorder" 
 --        }
-links
+    links
         {
             "muggy",
             "glfw3",
