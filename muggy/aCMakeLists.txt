@@ -86,8 +86,8 @@ file ( GLOB_RECURSE apiFiles
 
 # Add the sources to the library
 add_library ( ${PROJECT_NAME} 
-              SHARED muggy.cpp 
-#              STATIC muggy.cpp 
+#              SHARED muggy.cpp 
+              STATIC muggy.cpp 
               ${SrcFiles}
               ${apiFiles}
 )
