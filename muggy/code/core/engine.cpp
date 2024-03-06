@@ -69,7 +69,9 @@ uint32_t engineInitialize()
 
     // Assign app
     app = muggy::application::createApplication( );
-    if ( app->loadGameData() )
+    // Check again that app did not return a nullptr
+    // and also verify that the load of game data succeded
+    if ( app != nullptr && app->loadGameData() )
     {
         // TODO(klek): Change this to regular error code
         return 2;

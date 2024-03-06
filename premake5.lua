@@ -75,7 +75,7 @@ project "muggy"
 --        { 
 --            "-Wno-switch",
 --            "-Wno-missing-field-initializers",
---           "-Wno-unused-parameter", 
+--            "-Wno-unused-parameter", 
 --            "-Wno-ignored-qualifiers", 
 --            "-Wno-unknown-pragmas", 
 --            "-Wno-class-memaccess", 
@@ -173,7 +173,7 @@ project "muggyExample"
 --        { 
 --            "-Wno-switch",
 --            "-Wno-missing-field-initializers",
---           "-Wno-unused-parameter", 
+--            "-Wno-unused-parameter", 
 --            "-Wno-ignored-qualifiers", 
 --            "-Wno-unknown-pragmas", 
 --            "-Wno-class-memaccess", 

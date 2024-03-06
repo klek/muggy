@@ -22,14 +22,8 @@ namespace muggy::application
         }
         virtual ~application( ) = default;
 
-        uint32_t loadGameData( )
-        {
-            return 0;
-        }
-        uint32_t unloadGameData( )
-        {
-            return 0;
-        }
+        uint32_t loadGameData( );
+        uint32_t unloadGameData( );
     private:
     };
 
