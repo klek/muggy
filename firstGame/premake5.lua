@@ -43,9 +43,9 @@ workspace "firstGame"
     outputDir = "%{wks.location}/bin/%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}"
     intermediateDir = "%{wks.location}/build/%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}"
     -- This is the 
-    libDir = "%{wks.location}/../../test/bin/%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}"
-    muggyIncDir = "%{wks.location}/../../test/muggy"
-    glfwIncDir = "%{wks.location}/../../test/muggy/thirdparty/glfw"
+    libDir = "%{wks.location}/../bin/%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}"
+    muggyIncDir = "%{wks.location}/../muggy"
+    glfwIncDir = "%{wks.location}/../muggy/thirdparty/glfw"
 
 project "firstGame"
     location "firstGame"
@@ -58,8 +58,8 @@ project "firstGame"
     --             included
     files 
     { 
-        "src/**.h", 
-        "src/**.cpp" 
+        "**.h", 
+        "**.cpp" 
     }
     includedirs 
     {
