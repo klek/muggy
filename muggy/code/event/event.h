@@ -17,7 +17,8 @@
 #include <functional>
 
 
-using evFnCallback = std::function<void(muggy::event::event&)>;
+//using evFnCallback = std::function<void(muggy::event::event&)>;
+using evFnCallback = void(*)( muggy::event::event& );
 
 
 #endif

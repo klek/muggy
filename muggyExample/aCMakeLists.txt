@@ -1,8 +1,8 @@
-cmake_minimum_required ( VERSION 3.0.0 )
-set ( PROJECT_NAME muggyExample)
+cmake_minimum_required ( VERSION 3.0...3.20 )
+set ( PROJECT_NAME muggyExample )
 project ( ${PROJECT_NAME} VERSION 0.1.0 LANGUAGES C CXX )
 
-include (CTest)
+include ( CTest )
 enable_testing ()
 
 # CMAKE flags
@@ -24,6 +24,8 @@ set ( OutputDir "${CMAKE_CURRENT_SOURCE_DIR}/../bin/${CMAKE_SYSTEM_NAME}${OSBitn
 set ( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OutputDir} )
 set ( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OutputDir} )
 set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OutputDir} )
+set ( BinaryDir "${CMAKE_CURRENT_SOURCE_DIR}/build" )
+set ( CMAKE_BINARY_DIR ${BinaryDir} )
 
 # Set include directories
 set ( IncDir ${CMAKE_CURRENT_SOURCE_DIR} )
@@ -34,9 +36,9 @@ set ( IncDir ${CMAKE_CURRENT_SOURCE_DIR} )
 include_directories ( ${IncDir} )
 include_directories ( ${IncDir}/tests )
 
-
 # Include external headers (such as muggy)
 include_directories ( ${CMAKE_CURRENT_SOURCE_DIR}/../muggy )
+
 # Add subdirectories (such as muggy) and also specify
 # the binary folder (reusing muggy here)
 # This will call that folders CMakeLists.txt and build
