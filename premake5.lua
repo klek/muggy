@@ -56,6 +56,12 @@ project "muggy"
         "%{prj.name}/**.h", 
         "%{prj.name}/**.cpp" 
     }
+    removefiles
+    {
+        "%{prj.name}/thirdparty/**.cpp",
+        "%{prj.name}/thirdparty/**.c",
+        "%{prj.name}/thirdparty/**.h",
+    }
     includedirs 
     { 
         "%{wks.location}/muggy", 
