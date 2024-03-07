@@ -107,7 +107,7 @@ project "muggy"
     end
     filter "configurations:Debug"
         defines 
-        { 
+        {
             "DEBUG_BUILD", 
             "GLFW" 
         }
@@ -126,6 +126,10 @@ project "muggy"
 --    kind "SharedLib"
 --    language "C++"
 --    cppdialect "C++17"
+--    defines
+--    {
+--        "BUILD_SHARED_LIBS==ON"
+--    }
     
 -- NOTE(klek): Consider moving each project to its own subfolder
 --project "muggyEditor"

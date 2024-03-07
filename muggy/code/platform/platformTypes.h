@@ -21,6 +21,7 @@
 
 namespace muggy::platform
 {
+    using windowPtr = GLFWwindow*;
     struct window_init_info
     {
         evFnCallback    callback{ nullptr };

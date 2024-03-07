@@ -9,6 +9,7 @@
 #if !defined(ENGINE_COMMON_H)
 #define ENGINE_COMMON_H
 
+#if ( defined(BUILD_SHARED_LIBS) && BUILD_SHARED_LIBS==ON)
 #if defined(_WIN64)
 #if !defined(MUGGY_API)
 #define MUGGY_API   extern "C" __declspec(dllexport)
@@ -18,6 +19,8 @@
 #define MUGGY_API   extern "C" __attribute__((visibility("default")))
 #endif
 #endif
-
+#else
+#define MUGGY_API
+#endif
 
 #endif
