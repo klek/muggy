@@ -60,4 +60,17 @@ namespace muggy::utils
 }
 #endif
 
+// Implement and include our own containers
+#include "freelist.h"
+
+#if !defined( _WIN64 )
+// Create a template function for _countof, which is already 
+// implemented in windows/vs
+template < typename T, size_t N >
+size_t constexpr _countof( T( &arr )[ N ] )
+{
+    return std::extent< T[ N ] >::value;
+}
+#endif
+
 #endif

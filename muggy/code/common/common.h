@@ -42,9 +42,9 @@
 
 
 // Internal common headers
-#include "../utilities/utilities.h"
 #include "myTypes.h"
 #include "id.h"
+#include "../utilities/utilities.h"
 
 // Including math library
 #include "../math/math.h"
