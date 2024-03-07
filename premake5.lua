@@ -65,11 +65,11 @@ project "muggy"
     includedirs 
     { 
         "%{wks.location}/muggy", 
-        "%{wks.location}/muggy/thirdparty/glfw/include" 
+        ( outputDir .. "/glfw/include" ) 
     }
     libdirs
     {
-        (outputDir)
+        ( outputDir .. "/glfw/lib" )
     }
     if _TARGET_OS == "windows" then 
         links 
@@ -103,13 +103,16 @@ project "muggy"
     -- TODO(klek): Add prebuild action to build and copy thirdparty library 
     --             outputs to outputDir
     -- Setup glfw dir
-    glfwDir = "%{prj.location}/thirdparty/glfw"
+--    glfwDir = "%{prj.location}/thirdparty/glfw"
+    thirdpartyDir = "%{prj.location}/thirdparty"
     if _TARGET_OS == "windows" then
         if _ACTION == "vs2022" then
-            prebuildcommands( "%{prj.location}/cmake_glfw_on_windows.bat %{glfwDir} %{intermediateDir}/glfw %{cfg.targetdir}" )
+            prebuildcommands( "%{prj.location}/cmake_glfw_on_windows.bat %{thirdpartyDir} %{intermediateDir} %{cfg.targetdir}" )
+            prebuildcommands( "%{prj.location}/cmake_vulkan_build_on_windows.bat %{thirdpartyDir} %{intermediateDir} %{cfg.targetdir}" )
         end
     else
-        prebuildcommands( "./%{prj.location}/cmake_glfw_on_linux.sh %{glfwDir} %{intermediateDir}/glfw %{outputDir}" )
+        prebuildcommands( "./%{prj.location}/cmake_glfw_on_linux.sh %{thirdpartyDir} %{intermediateDir} %{outputDir}" )
+        prebuildcommands( "./%{prj.location}/cmake_vulkan_build_on_linux.sh %{thirdpartyDir} %{intermediateDir} %{outputDir}" )
     end
     filter "configurations:Debug"
         defines 
@@ -166,11 +169,12 @@ project "muggyExample"
 --        "%{wks.location}/muggyExample/tests",
         "%{wks.location}/muggy",
 --        "%{wks.location}/muggy/platform",
-        "%{wks.location}/muggy/thirdparty/glfw/include" 
+        ( outputDir .. "/glfw/include" ) 
     }
     libdirs
     {
-        (outputDir)
+--        (outputDir)
+        ( outputDir .. "/glfw/lib" ) 
     }
     if _TARGET_OS == "windows" then
         links
