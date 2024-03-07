@@ -10,3 +10,6 @@
 [submodule "muggy/thirdparty/spirv-tools"]
 	path = muggy/thirdparty/spirv-tools
 	url = https://github.com/KhronosGroup/SPIRV-Tools.git
+[submodule "muggy/thirdparty/vulkan-validatonLayers"]
+	path = muggy/thirdparty/vulkan-validatonLayers
+	url = https://github.com/KhronosGroup/Vulkan-ValidationLayers.git
