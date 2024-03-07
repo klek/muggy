@@ -13,9 +13,10 @@
 
 // Defines for test to run
 #define TEST_ENTITIES           0
-#define TEST_WINDOW             1
+#define TEST_WINDOW             0
 #define TEST_FREELIST           0
 #define TEST_VECTOR             0
+#define TEST_RENDERER           1
 
 class test
 {

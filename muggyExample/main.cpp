@@ -21,6 +21,8 @@
 #include "tests/testFreelist.h"
 #elif TEST_VECTOR
 #include "tests/testVector.h"
+#elif TEST_RENDERER
+#include "tests/testRenderer.h"
 #else
 #error One of the tests have to be enabled in test.h
 #endif
