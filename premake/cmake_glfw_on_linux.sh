@@ -18,7 +18,7 @@ cmake -S "$SRC_PATH/glfw" \
 echo "Building glfw project..."
 cmake --build "$BUILD_PATH/glfw"
 echo "Installing glfw to: $BIN_PATH/glfw"
-cmake --install "$BUILD_PATH/glfw" --prefix "$BIN_PATH/glfw"
+cmake --install "$BUILD_PATH/glfw" --config Debug --prefix "$BIN_PATH/glfw"
 #echo Copying library: $LIB_PATH to binary path: $BIN_PATH
 #echo Creating symlink: $BIN_PATH to binary: $LIB_PATH
 #mkdir -p $BIN_PATH

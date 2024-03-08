@@ -107,8 +107,9 @@ project "muggy"
     thirdpartyDir = "%{prj.location}/thirdparty"
     if _TARGET_OS == "windows" then
         if _ACTION == "vs2022" then
-            prebuildcommands( "%{prj.location}/cmake_glfw_on_windows.bat %{thirdpartyDir} %{intermediateDir} %{cfg.targetdir}" )
-            prebuildcommands( "%{prj.location}/cmake_vulkan_build_on_windows.bat %{thirdpartyDir} %{intermediateDir} %{cfg.targetdir}" )
+            prebuildcommands{ "%{prj.location}/cmake_build_thirdparty_windows.bat %{thirdpartyDir} %{intermediateDir} %{cfg.targetdir}" }
+--            prebuildcommands{ "%{prj.location}/cmake_glfw_on_windows.bat %{thirdpartyDir} %{intermediateDir} %{cfg.targetdir}" }
+--            prebuildcommands{ "%{prj.location}/cmake_vulkan_build_on_windows.bat %{thirdpartyDir} %{intermediateDir} %{cfg.targetdir}" }
         end
     else
         prebuildcommands( "./%{prj.location}/cmake_glfw_on_linux.sh %{thirdpartyDir} %{intermediateDir} %{outputDir}" )

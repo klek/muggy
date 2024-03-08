@@ -11,11 +11,12 @@ echo "----"
 echo "Generating vulkan-loader project from $SRC_PATH/vulkan-loader to $BUILD_PATH/vulkan-loader ..."
 cmake -S "$SRC_PATH/vulkan-loader" \
       -B "$BUILD_PATH/vulkan-loader" \
+      -D CMAKE_BUILD_TYPE=Debug \
       -D UPDATE_DEPS=ON 
 echo "Building vulkan-loader ..."
 cmake --build "$BUILD_PATH/vulkan-loader"
 echo "Installing vulkan-loader to: $BIN_PATH/vulkan-loader"
-cmake --install "$BUILD_PATH/vulkan-loader" --prefix "$BIN_PATH/vulkan-loader"
+cmake --install "$BUILD_PATH/vulkan-loader" --config Debug --prefix "$BIN_PATH/vulkan-loader"
 
 # Building vulkan-tools
 #echo "----"
@@ -29,7 +30,7 @@ cmake --install "$BUILD_PATH/vulkan-loader" --prefix "$BIN_PATH/vulkan-loader"
 #echo "Building vulkan-tools..."
 #cmake --build "$BUILD_PATH/vulkan-tools"
 #echo "Installing vulkan-tools to: $BIN_PATH/vulkan-tools"
-#cmake --install "$BUILD_PATH/vulkan-tools" --prefix "$BIN_PATH/vulkan-tools"
+#cmake --install "$BUILD_PATH/vulkan-tools" --config Debug --prefix "$BIN_PATH/vulkan-tools"
 
 # Building vulkan-validationLayers
 echo "----"
@@ -43,7 +44,7 @@ cmake -S "$SRC_PATH/vulkan-validationLayers" \
 echo "Building vulkan-validationLayers ..."
 cmake --build "$BUILD_PATH/vulkan-validationLayers"
 echo "Installing vulkan-validationLayers: $BIN_PATH/vulkan-validationLayers"
-cmake --install "$BUILD_PATH/vulkan-validationLayers" --prefix "$BIN_PATH/vulkan-validationLayers"
+cmake --install "$BUILD_PATH/vulkan-validationLayers" --config Debug --prefix "$BIN_PATH/vulkan-validationLayers"
 
 # Building SPIRV-tools
 #echo "----"
@@ -53,6 +54,6 @@ cmake --install "$BUILD_PATH/vulkan-validationLayers" --prefix "$BIN_PATH/vulkan
 #echo "Building spirv-tools..."
 #cmake --build "$BUILD_PATH/spirv-tools"
 #echo "Installing spirv-tools: $BIN_PATH/spirv-tools"
-#cmake --install "$BUILD_PATH/spirv-tools" --prefix "$BIN_PATH/spirv-tools"
+#cmake --install "$BUILD_PATH/spirv-tools" --config Debug --prefix "$BIN_PATH/spirv-tools"
 
 

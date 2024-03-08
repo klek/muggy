@@ -14,6 +14,7 @@ if _TARGET_OS == "windows" then
 --    os.execute( "copy cmake_glfw_on_windows.bat ../muggy/cmake_glfw_on_windows.bat" )
     os.copyfile( "cmake_glfw_on_windows.bat", "../muggy/cmake_glfw_on_windows.bat" )
     os.copyfile( "cmake_vulkan_build_on_windows.bat", "../muggy/cmake_vulkan_build_on_windows.bat" )
+    os.copyfile( "cmake_build_thirdparty_windows.bat", "../muggy/cmake_build_thirdparty_windows.bat" )
 else
     os.execute( "echo [DEBUG]: This is Linux" )
     -- Copy bash-script for building the cmake environment for

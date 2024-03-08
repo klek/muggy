@@ -22,7 +22,7 @@ namespace muggy::graphics::vulkan::core
         // Determine which adapter (i.e graphics card) to use
         // Determine what is the maximum feature level that is supported
         // Create a vulkan device (this is a virtual adapter)
-
+        return false;
     }
 
     void shutdown( void )
