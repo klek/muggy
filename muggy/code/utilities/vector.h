@@ -53,7 +53,7 @@ namespace muggy::utils
 
         // Move-constructor, constructs by moving another vector
         // The original vector will be empty after the move
-        constexpr vector( const vector&& other )
+        constexpr vector( vector&& other )
          : 
             m_Capacity( other.m_Capacity ),
             m_Size( other.m_Size ),
@@ -85,7 +85,7 @@ namespace muggy::utils
 
         // Move-assignment operator, frees all resources in this vector
         // and moves the other vector into this one
-        constexpr vector& operator=( const vector&& other )
+        constexpr vector& operator=( vector&& other )
         {
             // Check for assignment to itself, which might not be 
             // what we want!
@@ -170,7 +170,7 @@ namespace muggy::utils
 
         // Resizes the vector and initializes new items with the
         // value provided
-        constexpr void resize( uint64_t newSize, T* value )
+        constexpr void resize( uint64_t newSize, const T& value )
         {
             static_assert( std::is_copy_constructible<T>::value,
                            "Type must be copy-constructible");
