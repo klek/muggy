@@ -65,7 +65,10 @@ project "muggy"
     includedirs 
     { 
         "%{wks.location}/muggy", 
-        ( outputDir .. "/glfw/include" ) 
+        ( outputDir .. "/glfw/include" ),
+        -- TODO(klek): Include vulkan headers...possibly add as separate
+        --             git submodules repo
+--        "%{prj.name}/thirdparty/vulkan-loader/external/Debug/64/Vulkan-Headers/include/"
     }
     libdirs
     {
@@ -74,7 +77,8 @@ project "muggy"
     if _TARGET_OS == "windows" then 
         links 
         { 
-            "glfw3"
+            "glfw3",
+            "vulkan"
         }
     else
 --        buildoptions 
@@ -90,7 +94,8 @@ project "muggy"
         links
         {
             "glfw3",
-            "X11"
+            "X11",
+            "vulkan"
         }
     end
     targetdir (outputDir)
@@ -107,25 +112,27 @@ project "muggy"
     thirdpartyDir = "%{prj.location}/thirdparty"
     if _TARGET_OS == "windows" then
         if _ACTION == "vs2022" then
-            prebuildcommands{ "%{prj.location}/cmake_build_thirdparty_windows.bat %{thirdpartyDir} %{intermediateDir} %{cfg.targetdir}" }
---            prebuildcommands{ "%{prj.location}/cmake_glfw_on_windows.bat %{thirdpartyDir} %{intermediateDir} %{cfg.targetdir}" }
+--            prebuildcommands{ "%{prj.location}/cmake_build_thirdparty_windows.bat %{thirdpartyDir} %{intermediateDir} %{cfg.targetdir}" }
+            prebuildcommands{ "%{prj.location}/cmake_glfw_on_windows.bat %{thirdpartyDir} %{intermediateDir} %{cfg.targetdir}" }
 --            prebuildcommands{ "%{prj.location}/cmake_vulkan_build_on_windows.bat %{thirdpartyDir} %{intermediateDir} %{cfg.targetdir}" }
         end
     else
         prebuildcommands( "./%{prj.location}/cmake_glfw_on_linux.sh %{thirdpartyDir} %{intermediateDir} %{outputDir}" )
-        prebuildcommands( "./%{prj.location}/cmake_vulkan_build_on_linux.sh %{thirdpartyDir} %{intermediateDir} %{outputDir}" )
+--        prebuildcommands( "./%{prj.location}/cmake_vulkan_build_on_linux.sh %{thirdpartyDir} %{intermediateDir} %{outputDir}" )
     end
     filter "configurations:Debug"
         defines 
         {
             "DEBUG_BUILD", 
-            "GLFW" 
+            "GLFW",
+            "GLFW_INCLUDE_VULKAN"
         }
 
     filter "configurations:Release"
         defines 
         { 
-            "GLFW" 
+            "GLFW",
+            "GLFW_INCLUDE_VULKAN"
         }
     filter {}
 
@@ -175,13 +182,14 @@ project "muggyExample"
     libdirs
     {
 --        (outputDir)
-        ( outputDir .. "/glfw/lib" ) 
+        ( outputDir .. "/glfw/lib" )
     }
     if _TARGET_OS == "windows" then
         links
         {
             "muggy",
-            "glfw3"
+            "glfw3",
+            "vulkan"
         }
     else
 --        buildoptions 
@@ -198,7 +206,8 @@ project "muggyExample"
         {
             "muggy",
             "glfw3",
-            "X11"
+            "X11",
+            "vulkan"
         }
     end    
     targetdir (outputDir)
@@ -213,13 +222,15 @@ project "muggyExample"
         defines 
         { 
             "DEBUG_BUILD",
-            "GLFW" 
+            "GLFW",
+            "GLFW_INCLUDE_VULKAN"
         }
 
     filter "configurations:Release"
         defines 
         { 
-            "GLFW" 
+            "GLFW",
+            "GLFW_INCLUDE_VULKAN"
         }
     filter {}
 

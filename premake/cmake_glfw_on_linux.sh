@@ -14,7 +14,8 @@ cmake -S "$SRC_PATH/glfw" \
       -D BUILD_SHARED_LIBS=OFF \
       -D GLFW_BUILD_EXAMPLES=OFF \
       -D GLFW_BUILD_TESTS=OFF \
-      -D GLFW_BUILD_DOCS=OFF
+      -D GLFW_BUILD_DOCS=OFF 
+#      -D GLFW_VULKAN_STATIC=ON
 echo "Building glfw project..."
 cmake --build "$BUILD_PATH/glfw"
 echo "Installing glfw to: $BIN_PATH/glfw"
