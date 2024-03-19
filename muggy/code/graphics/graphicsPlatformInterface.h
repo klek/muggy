@@ -10,14 +10,26 @@
 #define GRAPHICS_PLATFORM_INTERFACE_H
 
 #include "../common/common.h"
-//#include "renderer.h"
+#include "renderer.h"
+#include "../platform/window.h"
 
 namespace muggy::graphics
 {
     struct platform_interface
     {
-        bool(*initialize)(void);
-        void(*shutdown)(void);
+        bool(*initialize)( void );
+        void(*shutdown)( void );
+
+        struct {
+            surface(*create)( platform::window );
+            void(*remove)( surface_id );
+            void(*resize)( surface_id, uint32_t, uint32_t );
+            uint32_t(*getWidth)( surface_id );
+            uint32_t(*getHeight)( surface_id );
+            void(*render)( surface_id );
+        } surface;
+
+        graphics_platform platform;
     };
 }
 

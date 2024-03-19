@@ -14,9 +14,25 @@
 
 namespace muggy::graphics
 {
+    DEFINE_TYPED_ID(surface_id);
+
+    // The high level surface class, which similarly to a window
+    // is basically an id
     class surface
     {
+    public:
+        constexpr explicit surface( surface_id id ) : m_Id( id ) {}
+        constexpr surface( ) = default;
+        constexpr surface_id getId( ) const { return m_Id; }
+        constexpr bool isValid( ) const { return id::isValid( m_Id ); }
 
+        void resize( uint32_t width, uint32_t height ) const;
+        uint32_t getWidth( void ) const;
+        uint32_t getHeight( void ) const;
+        void render( void ) const;
+
+    private:
+        surface_id m_Id{ id::invalid_id };
     };
 
     struct render_surface 
@@ -34,8 +50,10 @@ namespace muggy::graphics
     };
 
     bool initialize( graphics_platform platform );
-
     void shutdown( void );
+
+    surface createSurface( platform::window window );
+    void removeSurface( surface_id id );
 }
 
 #endif

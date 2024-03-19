@@ -24,42 +24,101 @@ namespace muggy::graphics
             {
                 case graphics_platform::OPEN_GL :
                 {
-                    // OpenGL support is currently not implemented
+                    // Call OpenGL specific platform function
                     opengl::getPlatformInterface( gfx );
-                    return true;
+                    // OpenGL support is currently not implemented
+                    return false;
                     break;
                 }
                 case graphics_platform::DIRECT3D12 :
                 {
-                    // Direct3D12 support is currently not implemented
+                    // Call OpenGL specific platform function
+                    // NOTE(klek): D3D12 should only be supported on
+                    //             windows platforms
+                    #if defined( _WIN64 )
                     d3d12::getPlatformInterface( gfx );
+                    return false;
+                    #else
+                    return false;
+                    #endif
+                    // Direct3D12 support is currently not implemented
                     return false;
                     break;
                 }
 
                 case graphics_platform::VULKAN :
                 {
-                    // Vulkan support is currently not implemented
+                    // Call Vulkan specific platform function
+                    // NOTE(klek): Vulkan should be supported on all 
+                    //             platforms
                     vulkan::getPlatformInterface( gfx );
-                    return false;
+                    // Vulkan support is currently not implemented
+                    //return false;
                     break;
                 }
                 
                 default:
-                    break;
+                {
+                    return false;
+                    //break;
+                }
             }
-            return false;
+
+            // If we reach here we have an interface?
+            return true;
         }
 
     } // Anonymous namespace, ie only for use in this cpp-file
 
     bool initialize( graphics_platform platform )
     {
-        return setPlatformInterface( platform );
+        if ( setPlatformInterface( platform ) )
+        {
+            return gfx.initialize();
+        }
+        
+        return false;
+        //return setPlatformInterface( platform ) && gfx.initialize();
     }
 
     void shutdown( void )
     {
         gfx.shutdown();
     }
+
+    void surface::resize( uint32_t width, uint32_t height ) const
+    {
+        assert( isValid() );
+        gfx.surface.resize( m_Id, width, height );
+    }
+
+    uint32_t surface::getWidth( void ) const
+    {
+        assert( isValid() );
+        return gfx.surface.getWidth( m_Id );
+    }
+    
+    uint32_t surface::getHeight( void ) const
+    {
+        assert( isValid() );
+        return gfx.surface.getHeight( m_Id );
+    }
+    
+    void surface::render( void ) const
+    {
+        assert( isValid() );
+        gfx.surface.render( m_Id );
+    }
+
+    surface createSurface( platform::window window )
+    {
+        return gfx.surface.create( window );
+    }
+
+    void removeSurface( surface_id id )
+    {
+        assert( id::isValid( id ) );
+        gfx.surface.remove( id );
+    }
+
 }
