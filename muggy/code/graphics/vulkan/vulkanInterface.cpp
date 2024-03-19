@@ -6,8 +6,9 @@
 //  Notes:   
 //********************************************************************
 
-#include "vulkanInterface.h"
 #include "vulkanCommon.h"
+#include "../graphicsPlatformInterface.h"
+#include "vulkanInterface.h"
 #include "vulkanCore.h"
 
 namespace muggy::graphics::vulkan
@@ -21,6 +22,18 @@ namespace muggy::graphics::vulkan
     {
         interface.initialize = core::initialize;
         interface.shutdown = core::shutdown;
+
+        // TODO(klek): Add assignment of the low level surface
+        //             function calls here
+        interface.surface.create = core::createSurface;
+        interface.surface.remove = core::removeSurface;
+        interface.surface.resize = core::resizeSurface;
+        interface.surface.getWidth = core::getSurfaceWidth;
+        interface.surface.getHeight = core::getSurfaceHeigth;
+        interface.surface.render = core::renderSurface;
+
+        // Finally specify which platform this interface uses
+        interface.platform = graphics_platform::VULKAN;
     }
     
 } // namespace muggy::graphics::vulkan
