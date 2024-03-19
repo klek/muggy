@@ -17,7 +17,7 @@ namespace muggy::graphics
 
     namespace d3d12
     {
-        void getPlatformInterface( platform_interface& interface );
+        void getPlatformInterface( platform_interface& platformInterface );
     } // namespace vulkan
     
 } // namespace muggy::graphics

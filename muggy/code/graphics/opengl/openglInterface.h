@@ -17,7 +17,7 @@ namespace muggy::graphics
 
     namespace opengl
     {
-        void getPlatformInterface( platform_interface& interface );
+        void getPlatformInterface( platform_interface& platformInterface );
     } // namespace opengl
     
 } // namespace muggy::graphics

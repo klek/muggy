@@ -18,9 +18,9 @@ namespace muggy::graphics::opengl
 
     } // // Anonymous namespace, ie only for use in this cpp-file
     
-    void getPlatformInterface( platform_interface& interface )
+    void getPlatformInterface( platform_interface& platformInterface )
     {
-        interface.initialize = core::initialize;
-        interface.shutdown = core::shutdown;
+        platformInterface.initialize = core::initialize;
+        platformInterface.shutdown = core::shutdown;
     }
 }
