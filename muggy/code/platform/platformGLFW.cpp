@@ -192,10 +192,10 @@ namespace muggy::platform
             window_info& info{ getFromId( id) };
 
             // Make this context the current one
-            glfwMakeContextCurrent( info.windowHandle );
+            //glfwMakeContextCurrent( info.windowHandle );
             //glClear(GL_COLOR_BUFFER_BIT);
             glfwPollEvents();
-            glfwSwapBuffers( info.windowHandle );
+            //glfwSwapBuffers( info.windowHandle );
         }
 
         bool shouldWindowClose( window_id id )
@@ -392,7 +392,7 @@ namespace muggy::platform
                             init_info->callback : &windowDefaultCallback };
 
         // Open a new window without any context
-        //glfwWindowHint( GLFW_CLIENT_API, GLFW_NO_API );
+        glfwWindowHint( GLFW_CLIENT_API, GLFW_NO_API );
         // Open the window as invisible first
         glfwWindowHint( GLFW_VISIBLE, GLFW_FALSE );
         info.windowHandle = glfwCreateWindow( info.area.width, 
@@ -417,7 +417,7 @@ namespace muggy::platform
         }
 
         // Make context current
-        glfwMakeContextCurrent( info.windowHandle );
+        //glfwMakeContextCurrent( info.windowHandle );
 
         // Setup the close callback
         glfwSetWindowCloseCallback( info.windowHandle, windowCloseCallback );

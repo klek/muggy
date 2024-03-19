@@ -19,10 +19,11 @@ namespace muggy::platform
     class window
     {
     public:
-        constexpr explicit window( window_id id ) : m_Id(id) {}
-        constexpr window( ) : m_Id( id::invalid_id ) { }
+        constexpr explicit window( window_id id ) : m_Id( id ) {}
+        //constexpr window( ) : m_Id( id::invalid_id ) { }
+        constexpr window( ) = default;
         constexpr window_id getId( ) const { return m_Id; }
-        constexpr bool isValid( ) const { return id::isValid(m_Id); }
+        constexpr bool isValid( ) const { return id::isValid( m_Id ); }
 
         void setFullScreen( bool isFullScreen ) const;
         //void setWindowedFullScreen ( bool isFullScreen ) const;
