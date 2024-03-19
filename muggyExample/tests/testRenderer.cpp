@@ -13,6 +13,7 @@
 #define NR_OF_SURFACES              4
 
 muggy::graphics::render_surface     surfaces[NR_OF_SURFACES];
+test_timer                          timer { };
 static uint32_t                     iteration { 0 };
 bool isRunning { true };
 
@@ -50,14 +51,24 @@ static void onEventCallback( muggy::event::event& e )
 }
 
 static void createRenderSurface( muggy::graphics::render_surface& surface,
-                                 muggy::platform::window_init_info& info   )
+                                 muggy::platform::window_init_info info   )
 {
     surface.window = muggy::platform::createWindow( &info );
+    surface.surface = muggy::graphics::createSurface( surface.window );
 }
 
 static void destroyRenderSurface( muggy::graphics::render_surface& surface )
 {
-    muggy::platform::removeWindow( surface.window.getId() );
+    muggy::graphics::render_surface temp { surface };
+    surface = { };
+    if ( temp.surface.isValid() )
+    {
+        muggy::graphics::removeSurface( temp.surface.getId() );
+    }
+    if ( temp.window.isValid() )
+    {
+        muggy::platform::removeWindow( temp.window.getId() );
+    }
 }
 
 bool engineTest::initialize( void )
@@ -92,16 +103,23 @@ void engineTest::run( void )
 {
     while ( isRunning ) 
     {
+        timer.begin();
+
         bool allClosed = false;
         for ( uint32_t i = 0; i < NR_OF_SURFACES; i++ )
         {
             if ( !( surfaces[i].window.isClosed() ) )
             {
-               surfaces[i].window.update();
+                surfaces[i].window.update();
+                if ( surfaces[i].surface.isValid() )
+                {
+                    surfaces[i].surface.render();
+                }
             }
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(2));
+        timer.end();
     }
 }
 
