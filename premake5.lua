@@ -11,12 +11,7 @@ workspace "MuggySolution"
     { 
         "MultiProcessorCompile" 
     }
-    
-    if _TARGET_OS == "windows" then
-        startproject "muggyExample"
-    else
-        startproject "muggyExample"
-    end
+    startproject "muggyExample"
     
     filter "configurations:Debug"
         symbols "on"
@@ -34,12 +29,17 @@ workspace "MuggySolution"
         
     -- Set toolset to GCC on linux
     if _TARGET_OS == "linux" then
---        toolset "gcc"
+        toolset "gcc"
     end
         
     -- Setup output directories -> Generate a bin folder in the root directory
     outputDir = "%{wks.location}/bin/%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}"
     intermediateDir = "%{wks.location}/build/%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}"
+    
+    -- Setup vulkan install path for windows
+    if _TARGET_OS == "windows" then
+        vulkanSDK = os.getenv( "VULKAN_SDK" ) 
+    end
     
 -- NOTE(klek): Consider moving each project to its own subfolder
 project "muggy"
@@ -66,21 +66,30 @@ project "muggy"
     { 
         "%{wks.location}/muggy", 
         ( outputDir .. "/glfw/include" ),
-        -- TODO(klek): Include vulkan headers...possibly add as separate
-        --             git submodules repo
---        "%{prj.name}/thirdparty/vulkan-loader/external/Debug/64/Vulkan-Headers/include/"
     }
     libdirs
     {
         ( outputDir .. "/glfw/lib" )
     }
     if _TARGET_OS == "windows" then 
+        includedirs 
+        {
+            ( vulkanSDK .. "/Include" )
+        }
+        libdirs
+        {
+            ( vulkanSDK .. "/Lib" )
+        }
         links 
         { 
             "glfw3",
-            "vulkan"
+            "vulkan-1"
         }
     else
+        removefiles
+        {
+            "%{prj.name}/code/graphics/direct3d12/**.cpp"
+        }
 --        buildoptions 
 --        { 
 --            "-Wno-switch",
@@ -185,11 +194,19 @@ project "muggyExample"
         ( outputDir .. "/glfw/lib" )
     }
     if _TARGET_OS == "windows" then
+        includedirs 
+        {
+            ( vulkanSDK .. "/Include" )
+        }
+        libdirs
+        {
+            ( vulkanSDK .. "/Lib" )
+        }
         links
         {
             "muggy",
             "glfw3",
-            "vulkan"
+            "vulkan-1"
         }
     else
 --        buildoptions 

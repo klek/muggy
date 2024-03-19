@@ -80,9 +80,9 @@ namespace muggy::graphics::vulkan
                 extent.width = width;
                 extent.height = height;
 
-                // Clam the extent to be within the boundaries of surface min/max
-                extent.width = std::max( capabilities.minImageExtent.width, std::min( capabilities.maxImageExtent.width, extent.width ) );
-                extent.height = std::max( capabilities.minImageExtent.height, std::min( capabilities.maxImageExtent.height, extent.height ) );
+                // Clamp the extent to be within the boundaries of surface min/max
+                extent.width = MUGGY_MAX( capabilities.minImageExtent.width, MUGGY_MIN( capabilities.maxImageExtent.width, extent.width ) );
+                extent.height = MUGGY_MAX( capabilities.minImageExtent.height, MUGGY_MIN( capabilities.maxImageExtent.height, extent.height ) );
 
                 return extent;
             }
@@ -243,7 +243,7 @@ namespace muggy::graphics::vulkan
             {
                 VkWin32SurfaceCreateInfoKHR createInfo {};
                 createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-                createInfo.hwnd = glfwGetWin32Window( m_Window.handle() );
+                createInfo.hwnd = glfwGetWin32Window( (GLFWwindow*)m_Window.handle() );
                 createInfo.hinstance = GetModuleHandle( nullptr );
 
                 VkResult res = vkCreateWin32SurfaceKHR( instance,

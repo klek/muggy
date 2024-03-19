@@ -20,6 +20,10 @@
 
 #define BIT(x)                  (1 << x)
 
+// Max and min macros
+#define MUGGY_MAX(a,b)          ( ( a > b ) ? a : b )
+#define MUGGY_MIN(a,b)          ( ( a < b ) ? a : b )
+
 // Class macros
 #if !defined ( MUGGY_DISABLE_COPY )
 #define MUGGY_DISABLE_COPY(T)                                       \
